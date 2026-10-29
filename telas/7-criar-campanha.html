@@ -1,0 +1,125 @@
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="chip-rf inline-flex items-center gap-2 fundo-realce texto-padrao px-3 py-2 rounded-full border borda-padrao mb-6">Requisito Funcional: <span class="rf-inline">RF-020 / RF-024 / RF-027 / RF-028</span>. Formulário de submissão de campanha</div>
+        <div class="mb-8">
+            <h1 class="titulo-pagina texto-forte">Submeter Projeto Científico</h1>
+            <p class="text-sm texto-fraco mt-2 max-w-xl">As campanhas submetidas ficam em status <strong>Aguardando Aprovação</strong> até serem revisadas pelo administrador. Cada pesquisador pode ter no máximo 2 campanhas simultâneas em andamento ou aguardando aprovação.</p>
+        </div>
+
+        <div class="fundo-cartao rounded-2xl shadow-xl border borda-padrao p-10 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-blue-500"></div>
+
+            <div class="fundo-info border borda-info rounded-xl p-6 mb-10 flex gap-4 items-start shadow-inner">
+                <div class="fundo-info texto-info p-2 rounded-lg mt-0.5"><i class="fa-solid fa-microscope text-xl"></i></div>
+                <div>
+                    <h2 class="subtitulo texto-info mb-1">Análise de Curadoria <span class="rf-inline">(RF-016)</span></h2>
+                    <p class="text-sm texto-info font-medium leading-relaxed">Todo projeto submetido passa por uma rigorosa avaliação do Conselho Científico da plataforma antes de ser publicado. Certifique-se de que o escopo e o orçamento estejam perfeitamente justificados.</p>
+                </div>
+            </div>
+
+            <nav id="criar-campanha-passos" class="passos" aria-label="Etapas do formulário"></nav>
+
+            <form id="form-criar-campanha" onsubmit="event.preventDefault(); submeterCriarCampanha();">
+                <div id="passo-identificacao" class="tab-content active space-y-8">
+                    <div class="campo">
+                        <label for="criar-campanha-titulo" class="rotulo-campo">Título do Projeto</label>
+                        <input id="criar-campanha-titulo" type="text" required class="input-padrao font-bold texto-forte" placeholder="Ex: Impacto das altas temperaturas em SSDs NVMe">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="campo">
+                            <label for="create-area-options" class="rotulo-campo">Área CNPq <span class="rf-inline">(RF-028)</span></label>
+                            <select id="create-area-options" class="input-padrao font-bold texto-forte appearance-none cursor-pointer"></select>
+                            <p class="campo__ajuda">Áreas ativas listadas em ordem alfabética.</p>
+                        </div>
+                        <div class="campo">
+                            <span class="rotulo-campo">Instituição Vinculada</span>
+                            <div class="w-full fundo-realce border-2 borda-padrao rounded-xl p-4 text-sm font-bold texto-fraco cursor-not-allowed flex items-center gap-2">
+                                <i class="fa-solid fa-lock texto-fraco text-xs"></i> IFSP (Via Lattes)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="passo-projeto" class="tab-content space-y-8">
+                    <div class="campo">
+                        <div class="flex justify-between items-baseline">
+                            <label for="criar-campanha-resumo" class="rotulo-campo">Resumo curto (aparece no card)</label>
+                            <span id="criar-campanha-resumo-contador" class="text-xs texto-fraco font-mono">0/280</span>
+                        </div>
+                        <textarea id="criar-campanha-resumo" required rows="2" maxlength="280" class="input-padrao resize-none" placeholder="Uma frase que resuma o projeto para quem está navegando o catálogo."></textarea>
+                    </div>
+                    <div class="campo">
+                        <label for="criar-campanha-descricao" class="rotulo-campo">Descrição e Metodologia <span class="rf-inline">(RF-020 / RF-024)</span></label>
+                        <textarea id="criar-campanha-descricao" required rows="6" class="input-padrao resize-none" placeholder="Descreva objetivos, metodologia, resultados esperados e impacto científico."></textarea>
+                    </div>
+                    <div class="campo">
+                        <span class="rotulo-campo">Capa do projeto</span>
+                        <div id="criar-campanha-capas" class="grid grid-cols-3 gap-4"></div>
+                        <p class="campo__ajuda">Protótipo: escolha entre as 3 imagens de acervo disponíveis.</p>
+                    </div>
+                </div>
+
+                <div id="passo-orcamento" class="tab-content space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="campo">
+                            <label for="criar-campanha-meta" class="rotulo-campo">Meta de Arrecadação (R$)</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold texto-fraco">R$</span>
+                                <input id="criar-campanha-meta" type="number" required min="1000" value="15000" class="input-padrao font-bold texto-forte pl-12">
+                            </div>
+                        </div>
+                        <div class="campo">
+                            <label for="criar-campanha-prazo" class="rotulo-campo">Prazo de Captação <span class="rf-inline">(RF-045)</span></label>
+                            <div class="relative">
+                                <input id="criar-campanha-prazo" type="number" required min="15" max="60" value="30" class="input-padrao font-bold texto-forte pr-16">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 font-bold texto-fraco text-sm">Dias</span>
+                            </div>
+                            <p class="campo__ajuda">Mín: 15 / Máx: 60 dias corridos</p>
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label class="rotulo-campo mb-4">Selecione o Modelo de Financiamento</label>
+                        <div id="create-model-options" class="flex flex-col sm:flex-row gap-6"></div>
+                    </div>
+
+                    <div class="campo">
+                        <div class="flex justify-between items-baseline mb-4">
+                            <span class="rotulo-campo mb-0">Itens do orçamento</span>
+                            <button type="button" id="criar-campanha-rubrica-add" class="text-xs font-bold texto-marca hover:underline"><i class="fa-solid fa-plus"></i> Adicionar item</button>
+                        </div>
+                        <div id="criar-campanha-rubricas" class="space-y-3"></div>
+                        <div id="criar-campanha-rubricas-soma" class="mt-4 rounded-xl p-4 text-sm font-bold flex justify-between items-center"></div>
+                    </div>
+
+                    <div class="fundo-destaque border borda-padrao rounded-xl p-5 text-sm texto-padrao">
+                        <p class="font-semibold texto-forte mb-2">Importante</p>
+                        <p class="leading-relaxed">Projetos enviados entram em status <strong>Aguardando Aprovação</strong> e só são exibidos publicamente após aprovação do administrador <span class="rf-inline">(RF-027)</span>. O máximo permitido é <strong>2 campanhas simultâneas</strong> em andamento ou aguardando aprovação por pesquisador <span class="rf-inline">(RF-029)</span>. Em campanhas all-or-nothing, apenas PIX é aceito e contribuições são canceladas se a meta não for atingida <span class="rf-inline">(RF-022)</span>.</p>
+                    </div>
+                </div>
+
+                <div id="passo-revisao" class="tab-content space-y-8">
+                    <div>
+                        <p class="rotulo-campo mb-4">Pré-visualização: como o card aparece no catálogo</p>
+                        <div id="criar-campanha-preview" class="max-w-sm"></div>
+                    </div>
+                    <div>
+                        <p class="rotulo-campo mb-4">Checklist antes de enviar</p>
+                        <div id="criar-campanha-checklist" class="space-y-2"></div>
+                    </div>
+                </div>
+
+                <div class="pt-8 mt-10 border-t-2 borda-padrao flex flex-col sm:flex-row justify-between gap-4">
+                    <button type="button" id="criar-campanha-descartar" class="px-8 py-4 rounded-xl font-bold texto-fraco hover-fundo-sutil hover-texto-forte transition-colors">Descartar Rascunho</button>
+                    <div class="flex gap-3">
+                        <button type="button" id="criar-campanha-voltar" class="hidden px-8 py-4 rounded-xl font-bold texto-padrao border-2 borda-padrao hover-fundo-sutil transition-colors">Voltar</button>
+                        <button type="button" id="criar-campanha-avancar" class="bg-dark hover:bg-black text-white font-bold py-4 px-10 rounded-xl shadow-xl transition-all hover:-translate-y-0.5 flex items-center gap-2">
+                            Próximo <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <button type="submit" id="criar-campanha-submeter" class="hidden bg-primary hover:bg-primary-dark text-white font-bold py-4 px-10 rounded-xl shadow-xl transition-all hover:-translate-y-0.5 items-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Submeter Projeto
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>

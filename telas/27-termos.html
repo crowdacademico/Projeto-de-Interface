@@ -1,0 +1,28 @@
+<div class="fundo-pagina py-16 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4">
+        <div id="migalhas-termos"></div>
+
+        <h1 class="titulo-pagina mb-10">Termos de uso e política de privacidade</h1>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
+            <aside class="lg:col-span-1">
+                <div class="lg:sticky lg:top-24">
+                    <p class="rotulo mb-3">Nesta página</p>
+                    <nav id="termos-indice" class="flex flex-col gap-1" aria-label="Índice das seções"></nav>
+                </div>
+            </aside>
+
+            <div class="lg:col-span-3">
+                <div id="termos-conteudo" class="space-y-12"></div>
+
+                <div class="cartao mt-12">
+                    <label class="flex items-start gap-2.5 text-sm texto-padrao cursor-pointer mb-4">
+                        <input type="checkbox" id="termos-aceite" onchange="atualizarAceiteTermos(this.checked)" class="mt-0.5" />
+                        Li e aceito os termos de uso e a política de privacidade do CrowdAcadêmico.
+                    </label>
+                    <button type="button" id="termos-botao-confirmar" onclick="confirmarAceiteTermos()" disabled class="btn btn-primary">Confirmar aceite</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

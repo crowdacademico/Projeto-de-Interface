@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrowdAcadêmico - Protótipo de Interface</title>
+    <script src="vendor/tailwind.js"></script>
+    <link rel="stylesheet" href="vendor/font-awesome/css/all.min.css">
+    <link rel="stylesheet" href="css/0-style.css">
+    <script>
+        // Estende o Tailwind pra ler dos MESMOS tokens de css/1-root.css
+        // (ver Briefing de Direção de Arte, §5) - sem isto, um valor como
+        // "11px de rótulo" continua mais fácil de escrever como
+        // text-[11px] do que de token, e o hardcoded sempre volta. Depois
+        // desta extensão, o caminho fácil (a classe Tailwind) passa a SER
+        // o caminho certo (o token).
+        tailwind.config = {
+            theme: {
+                extend: {
+                    // Lendo de var() (não mais nome de fonte cru) desde
+                    // 21-08-2026 - antes `serif` aqui dizia 'Fraunces' por
+                    // fora enquanto --font-serif (css/1-root.css) já tinha
+                    // trocado pra Georgia; a classe utilitária `font-serif`
+                    // ficaria presa na fonte antiga se alguém a usasse de
+                    // novo. Trocar fonte agora é só editar 1-root.css,
+                    // nunca precisa tocar aqui.
+                    fontFamily: { sans: ['var(--font-sans)'], serif: ['var(--font-serif)'], dado: ['var(--font-dado)'] },
+                    // MANTER: primary/primary-dark/dark continuam em uso
+                    // cru (text-dark, bg-primary) em várias telas - saem
+                    // gradualmente na auditoria de hardcoded, não de uma
+                    // vez (ver §6.1 do briefing). `surface` foi removido
+                    // 21-08-2026 (vistoria pedida pelo Lucas): não tinha
+                    // NENHUM uso de `bg-surface`/`text-surface` no projeto
+                    // inteiro, e o valor (#F8FAFC) nem batia com o
+                    // equivalente real em CSS (--cor-fundo-pagina), só
+                    // confundia quem fosse procurar onde o fundo da página
+                    // é controlado.
+                    colors: { primary: '#0F9B58', 'primary-dark': '#0B7A45', dark: '#0F172A' },
+                    fontSize: {
+                        'microrrotulo':    ['var(--font-size-microrrotulo)',    { lineHeight: '1.1',  letterSpacing: '0.14em', fontWeight: '800' }],
+                        'rotulo':          ['var(--font-size-rotulo)',          { lineHeight: '1.2',  letterSpacing: '0.1em',  fontWeight: '800' }],
+                        'legenda':         ['var(--font-size-legenda)',         { lineHeight: '1.45' }],
+                        'corpo-pequeno':   ['var(--font-size-corpo-pequeno)',   { lineHeight: '1.55' }],
+                        'corpo':           ['var(--font-size-corpo)',           { lineHeight: '1.65' }],
+                        'corpo-grande':    ['var(--font-size-corpo-grande)',    { lineHeight: '1.6'  }],
+                        'subtitulo':       ['var(--font-size-subtitulo)',       { lineHeight: '1.3',  letterSpacing: '-0.01em'  }],
+                        'titulo-secao':    ['var(--font-size-titulo-secao)',    { lineHeight: '1.2',  letterSpacing: '-0.02em'  }],
+                        'titulo-pagina':   ['var(--font-size-titulo-pagina)',   { lineHeight: '1.15', letterSpacing: '-0.022em' }],
+                        'titulo-hero':     ['var(--font-size-titulo-hero)',     { lineHeight: '1.02', letterSpacing: '-0.03em'  }],
+                        'numero-kpi':      ['var(--font-size-numero-kpi)',      { lineHeight: '1',    letterSpacing: '-0.02em'  }],
+                        'numero-destaque': ['var(--font-size-numero-destaque)', { lineHeight: '1',    letterSpacing: '-0.025em' }],
+                        'numero-vitrine':  ['var(--font-size-numero-vitrine)',  { lineHeight: '1',    letterSpacing: '-0.03em'  }],
+                    },
+                    spacing: {
+                        'cartao':          'var(--espaco-cartao)',
+                        'cartao-grande':   'var(--espaco-cartao-grande)',
+                        'secao':           'var(--espaco-secao-y)',
+                        'secao-compacta':  'var(--espaco-secao-y-compacta)',
+                        'hero':            'var(--espaco-hero-y)',
+                        'sticky':          'var(--deslocamento-sticky)',
+                        'cabecalho':       'var(--altura-cabecalho)',
+                        'capa-cartao':     'var(--altura-capa-cartao)',
+                        'coluna-apoio':    'var(--largura-coluna-apoio)',
+                        'sidebar-conta':   'var(--largura-sidebar-conta)',
+                        'sidebar-filtros': 'var(--largura-sidebar-filtros)',
+                        'qrcode':          'var(--altura-qrcode)',
+                    },
+                    maxWidth: {
+                        'conteudo':          'var(--largura-conteudo)',
+                        'conteudo-estreito': 'var(--largura-conteudo-estreita)',
+                        'leitura':           'var(--largura-leitura)',
+                    },
+                    borderRadius: {
+                        'sm': 'var(--radius-sm)', 'md': 'var(--radius-md)', 'lg': 'var(--radius-lg)',
+                        'xl': 'var(--radius-xl)', '2xl': 'var(--radius-2xl)', 'full': 'var(--radius-full)',
+                    },
+                    boxShadow: {
+                        'sm': 'var(--shadow-sm)', 'md': 'var(--shadow-md)', 'lg': 'var(--shadow-lg)',
+                        'xl': 'var(--shadow-xl)', '2xl': 'var(--shadow-2xl)',
+                        'marca': 'var(--shadow-marca)', 'interna': 'var(--shadow-interna)',
+                    },
+                    transitionTimingFunction: { 'suave': 'var(--curva-suave)', 'entrada': 'var(--curva-entrada)' },
+                    zIndex: { 'sticky': '20', 'cabecalho': '50', 'menu': '60', 'modal': '100', 'aviso': '200', 'dev': '9999' },
+                }
+            }
+        }
+    </script>
+    <script>
+        (function () {
+            // Mantém o MESMO valor bruto ('claro'/'escuro'/'sistema') que
+            // js/3-tema.js grava - nunca resolvido pra só claro/escuro
+            // aqui, porque css/1-root.css reage a data-tema="sistema"
+            // com @media (prefers-color-scheme: dark) pra continuar
+            // acompanhando o SO ao vivo (troca de tema do Windows com a
+            // aba aberta, sem precisar recarregar).
+            var CHAVE_TEMA = 'crowdacademico-protótipo.tema';
+            var salvo = localStorage.getItem(CHAVE_TEMA);
+            var tema = salvo === 'claro' || salvo === 'escuro' || salvo === 'sistema' ? salvo : 'sistema';
+            document.documentElement.dataset.tema = tema;
+            localStorage.setItem(CHAVE_TEMA, tema);
+
+            // Mesmo motivo do tema: precisa aplicar ANTES do primeiro
+            // paint, senão a página pisca do tamanho padrão pro tamanho
+            // salvo. Lista de escalas duplicada aqui (ver
+            // dados-falsos/12-config-prototipo.js) só porque este trecho
+            // não pode ser um módulo ES (que rodaria tarde demais).
+            var ESCALAS_FONTE = [0.875, 1, 1.125, 1.25];
+            var CHAVE_ESCALA = 'crowdacademico-protótipo.escala-fonte';
+            var escalaSalva = Number(localStorage.getItem(CHAVE_ESCALA));
+            var escala = ESCALAS_FONTE.indexOf(escalaSalva) === -1 ? 1 : escalaSalva;
+            document.documentElement.style.setProperty('--escala-fonte', String(escala));
+        })();
+    </script>
+</head>
+<body class="fundo-pagina texto-forte min-h-screen app-shell">
+    <a href="#app" class="pular-conteudo">Pular para o conteúdo</a>
+    <div id="app-cabecalho"></div>
+    <div id="app-nav-flutuante"></div>
+
+    <div id="app" class="w-full min-h-0">
+        <main id="view-home" class="view-section active flex-grow"></main>
+        <main id="view-explorar" class="view-section flex-grow"></main>
+        <main id="view-como-funciona" class="view-section flex-grow"></main>
+        <main id="view-perfil-pesquisador" class="view-section flex-grow"></main>
+        <main id="view-sobre" class="view-section flex-grow"></main>
+        <main id="view-transparencia" class="view-section flex-grow"></main>
+        <main id="view-cadastro" class="view-section flex-grow"></main>
+        <main id="view-atualizacoes" class="view-section flex-grow"></main>
+        <main id="view-termos" class="view-section flex-grow"></main>
+        <main id="view-notificacoes" class="view-section flex-grow"></main>
+        <main id="view-minha-conta" class="view-section flex-grow fundo-sutil py-10"></main>
+        <main id="view-campanha" class="view-section flex-grow"></main>
+        <main id="view-checkout" class="view-section flex-grow fundo-sutil py-12"></main>
+        <main id="view-apoio-confirmado" class="view-section flex-grow fundo-sutil"></main>
+        <main id="view-login" class="view-section fundo-pagina"></main>
+        <main id="view-dash-doador" class="view-section flex-grow fundo-sutil py-10"></main>
+        <main id="view-dash-pesquisador" class="view-section flex-grow fundo-sutil py-10"></main>
+        <main id="view-criar-campanha" class="view-section flex-grow fundo-sutil py-12"></main>
+    </div>
+
+    <div id="app-rodape"></div>
+
+    <div id="app-avisos" class="pilha-avisos" role="status" aria-live="polite"></div>
+
+    <script type="module" src="js/0-script.js"></script>
+</body>
+</html>

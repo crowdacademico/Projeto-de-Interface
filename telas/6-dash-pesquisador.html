@@ -1,0 +1,75 @@
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="chip-rf inline-flex items-center gap-2 fundo-realce texto-padrao px-3 py-2 rounded-full border borda-padrao mb-6">Requisito Funcional: Painel do pesquisador com métricas de campanha</div>
+        <h1 class="sr-only">Painel do pesquisador</h1>
+    </div>
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="painel-conta-shell">
+        <aside class="painel-conta-sidebar" aria-label="Conta do pesquisador">
+            <div class="flex flex-col items-center mb-8 p-6 fundo-institucional-sutil rounded-xl border borda-padrao text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-full h-1 fundo-institucional"></div>
+                <div class="w-20 h-20 fundo-institucional texto-sobre-escuro-forte rounded-xl flex items-center justify-center font-black text-3xl mb-4 shadow-lg">L</div>
+                <div class="font-black texto-forte text-lg mb-1">Lucas Novais</div>
+                <div class="inline-flex items-center gap-1.5 microrrotulo texto-institucional fundo-institucional-sutil border borda-padrao px-2.5 py-1 rounded-md mt-2">
+                    <i class="fa-solid fa-building-columns"></i> IFSP · vínculo declarado
+                </div>
+            </div>
+
+            <nav id="researcher-sidebar-nav" class="space-y-2" aria-label="Navegação do painel do pesquisador"></nav>
+        </aside>
+
+        <div class="painel-conta-area space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h2 class="titulo-secao texto-forte">Gestão de Campanhas</h2>
+                <button onclick="nav('criar-campanha')" class="bg-dark hover:bg-black text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg transition-all hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2">
+                    <i class="fa-solid fa-plus text-primary"></i> Criar Nova Campanha
+                </button>
+            </div>
+
+            <div class="fundo-cartao rounded-2xl shadow-sm border borda-padrao p-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b borda-padrao pb-6">
+                    <div>
+                        <span class="fundo-sucesso texto-sucesso borda-sucesso border microrrotulo px-2.5 py-1 rounded-md mb-3 inline-flex items-center gap-1.5"><i class="fa-solid fa-satellite-dish animate-pulse"></i> Captação Ativa</span>
+                        <h3 class="subtitulo texto-forte">IA Híbrida para Sistemas Tutores Inteligentes (STI)</h3>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="nav('campanha')" class="border-2 borda-padrao hover:border-primary hover:text-primary texto-padrao text-sm font-bold px-4 py-2.5 rounded-xl transition-all whitespace-nowrap shadow-sm flex items-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver página pública</button>
+                        <button onclick="mostrarAcao('Encerramento antecipado simulado no protótipo, passa por aprovação do Admin.');" class="border-2 borda-padrao hover:border-primary hover:text-primary texto-padrao text-sm font-bold px-4 py-2.5 rounded-xl transition-all whitespace-nowrap shadow-sm flex items-center gap-2"><i class="fa-solid fa-flag-checkered"></i> Encerrar antecipadamente</button>
+                        <button onclick="mostrarAcao('Postar atualização simulada no protótipo.');" class="bg-primary hover:bg-primary-dark text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-all whitespace-nowrap shadow-sm flex items-center gap-2"><i class="fa-solid fa-bullhorn"></i> Postar Atualização</button>
+                    </div>
+                </div>
+
+                <div id="researcher-stats" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"></div>
+                <div id="researcher-grafico-arrecadacao" class="h-32 mb-8"></div>
+                <div id="researcher-progress" class="fundo-sutil p-6 rounded-xl border borda-padrao"></div>
+            </div>
+            <div class="fundo-cartao rounded-2xl shadow-sm border borda-padrao p-8">
+                <div class="flex items-center justify-between mb-6 gap-4">
+                    <div>
+                        <div class="rotulo">Projetos Criados</div>
+                        <h3 class="subtitulo texto-forte">Campanhas em andamento</h3>
+                    </div>
+                    <span class="rf-inline text-xs font-bold uppercase tracking-widest texto-fraco fundo-realce px-3 py-2 rounded-full">RF-015</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full tabela-dividida text-sm">
+                        <thead class="fundo-sutil">
+                            <tr>
+                                <th class="px-6 py-4 text-left rotulo w-[22%]">Campanha</th>
+                                <th class="px-6 py-4 text-left rotulo w-[11%]" title="Total arrecadado antes da taxa de manutenção da plataforma">Bruto <i class="fa-regular fa-circle-question text-xs"></i></th>
+                                <th class="px-6 py-4 text-left rotulo w-[13%]" title="Valor já descontada a taxa de manutenção da plataforma">Líquido <i class="fa-regular fa-circle-question text-xs"></i></th>
+                                <th class="px-6 py-4 text-left rotulo w-[11%]">Doadores</th>
+                                <th class="px-6 py-4 text-left rotulo w-[11%]">Prazo</th>
+                                <th class="px-6 py-4 text-left rotulo w-[11%]">Meta</th>
+                                <th class="px-6 py-4 text-left rotulo w-[13%]">Status</th>
+                                <th class="px-6 py-4 text-left rotulo w-[8%]"><span class="sr-only">Ações</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="researcher-projects" class="fundo-cartao tabela-dividida text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="fundo-cartao rounded-2xl shadow-sm border borda-padrao p-8">
+                <div id="researcher-summary-cards" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+            </div>
+        </div>
+    </div>

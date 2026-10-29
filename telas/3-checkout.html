@@ -1,0 +1,101 @@
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="chip-rf inline-flex items-center gap-2 fundo-realce texto-padrao px-3 py-2 rounded-full border borda-padrao mb-4">Requisito Funcional: Simular fluxo de pagamento PIX para apoio rápido</div>
+        <h1 class="titulo-pagina mb-3">Finalizar apoio</h1>
+        <p class="max-w-4xl text-sm texto-fraco mb-6">Esta tela simula o fluxo de contribuição anônima via PIX. Cartão de crédito, débito e boleto são liberados apenas para usuários cadastrados. O QR Code expira em 15 minutos.</p>
+    </div>
+    <div class="max-w-4xl mx-auto px-4 flex flex-col md:flex-row gap-8">
+        <div class="flex-1 fundo-cartao rounded-2xl border borda-padrao shadow-xl overflow-hidden">
+            <div class="bg-[var(--cor-institucional-fundo)] px-8 py-5 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <i class="fa-brands fa-pix texto-marca-sobre-escuro text-2xl"></i>
+                    <h2 class="subtitulo texto-sobre-escuro-forte">Pagamento Instantâneo</h2>
+                </div>
+                <span class="veu-claro texto-urgencia-sobre-escuro microrrotulo px-3 py-1.5 rounded-full inline-flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full fundo-urgencia-sobre-escuro animate-pulse"></span> Aguardando Pagamento...
+                </span>
+            </div>
+
+            <div class="p-10 flex flex-col items-center text-center relative overflow-hidden">
+                <div class="absolute -top-24 -right-24 w-48 h-48 fundo-sucesso rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+
+                <div class="w-full max-w-md mb-8 relative">
+                    <p class="text-left rotulo-campo">Valor da contribuição</p>
+                    <div id="checkout-valores-pilulas" class="grid grid-cols-5 gap-2"></div>
+                    <input id="checkout-valor-outro" type="number" min="5" step="1" placeholder="Outro valor (R$)" class="input-padrao mt-3 hidden">
+                </div>
+
+                <h3 class="subtitulo texto-forte mb-2">Escaneie o QR Code</h3>
+                <p class="text-sm texto-fraco mb-8 max-w-sm">Abra o aplicativo do seu banco, selecione a opção "PIX" e escaneie a imagem abaixo.</p>
+
+                <div class="w-56 h-56 border-2 borda-padrao p-3 rounded-xl mb-8 fundo-cartao shadow-lg relative mx-auto group">
+                    <img src="imagens/qr-simulado.svg" alt="QR Code simulado para pagamento via PIX (protótipo, não é um código real)" class="w-full h-full opacity-90 group-hover:opacity-100 transition-opacity">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-white/50 backdrop-blur-sm rounded-xl">
+                        <i class="fa-brands fa-pix text-6xl texto-marca drop-shadow-md"></i>
+                    </div>
+                </div>
+
+                <div class="w-full max-w-md mb-8">
+                    <label for="pix-code" class="block text-left rotulo mb-2">Ou utilize o Pix Copia e Cola:</label>
+                    <div class="flex rounded-xl shadow-sm overflow-hidden border-2 borda-padrao focus-within:border-primary transition-colors fundo-sutil">
+                        <input id="pix-code" type="text" readonly value="00020126580014br.gov.bcb.pix.0136123e4567-e89b-12d3-a456-426614174000..." class="flex-1 bg-transparent p-4 text-sm font-dado texto-padrao outline-none truncate">
+                        <button id="botao-copiar-pix" onclick="copyPix()" class="bg-dark hover:bg-black text-white px-6 font-bold text-sm transition-colors border-l borda-padrao">Copiar</button>
+                    </div>
+                </div>
+
+                <div id="bloco-contador-pix" class="inline-flex items-center gap-3 font-dado fundo-aviso border borda-aviso texto-aviso px-5 py-2.5 rounded-lg text-sm font-bold shadow-sm">
+                    <i class="fa-regular fa-clock"></i> Expira em: <span id="contador-pix" class="numero">15:00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full md:w-96 flex-shrink-0 h-max">
+            <div class="fundo-cartao border borda-padrao rounded-2xl p-8 shadow-xl mb-4 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-primary"></div>
+
+                <h2 class="subtitulo texto-forte mb-6 pb-4 border-b borda-padrao">Resumo da Contribuição</h2>
+
+                <div class="space-y-4 text-sm mb-8">
+                    <div class="flex justify-between items-start gap-4">
+                        <span class="texto-fraco font-medium">Projeto</span>
+                        <span class="font-bold texto-forte text-right truncate">Microplásticos no Rio Paraná</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="texto-fraco font-medium">Apoio Financeiro</span>
+                        <span id="checkout-resumo-valor" class="font-bold texto-forte numero">R$ 150,00</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="texto-fraco font-medium">Taxa de Transação</span>
+                        <span class="texto-sucesso font-bold fundo-sucesso px-2 py-0.5 rounded text-xs border borda-sucesso">Isento via PIX</span>
+                    </div>
+                    <div class="border-t-2 border-dashed borda-padrao pt-5 mt-5 flex justify-between items-center">
+                        <span class="font-black texto-forte uppercase tracking-wider text-xs">Total a pagar</span>
+                        <span id="checkout-resumo-total" class="text-2xl font-black text-primary numero">R$ 150,00</span>
+                    </div>
+                </div>
+
+                <div class="fundo-destaque border borda-padrao rounded-xl p-4 mb-6 text-sm texto-padrao">
+                    <p class="font-semibold texto-forte mb-2">Regras de contribuição</p>
+                    <p class="leading-relaxed">PIX é o meio disponível para apoiadores anônimos. Cartão de crédito, débito e boleto são liberados apenas para usuários cadastrados. O valor mínimo por contribuição é <strong>R$ 5,00</strong> <span class="rf-inline">(RF-056)</span>.</p>
+                </div>
+
+                <div class="fundo-destaque border borda-padrao rounded-xl p-4 mb-6 text-sm texto-padrao">
+                    <p class="font-semibold texto-forte mb-2">Aviso importante</p>
+                    <p class="leading-relaxed">Esta contribuição está sujeita aos termos específicos do modelo <strong>Tudo ou Nada</strong>. No modelo Flexível, o recurso continua com o projeto mesmo que a meta não seja atingida.</p>
+                </div>
+
+                <label class="flex items-start gap-3 cursor-pointer p-4 fundo-sutil rounded-xl border borda-padrao mb-8 hover-fundo-sutil transition-colors">
+                    <input id="checkout-aceite-termos" type="checkbox" class="mt-1 w-4 h-4 accent-primary rounded borda-forte">
+                    <span class="text-xs texto-padrao font-medium leading-relaxed">Li e aceito os <strong class="text-primary">Termos de Pagamento</strong> desta transação e compreendo as regras do modelo de financiamento <strong class="texto-forte">Tudo ou Nada</strong>, incluindo as condições de reembolso aplicáveis. <span class="rf-inline">(RF-054)</span></span>
+                </label>
+                <p id="checkout-aceite-ajuda" class="text-xs texto-fraco -mt-6 mb-6">Aceite os termos acima para continuar.</p>
+
+                <button id="checkout-botao-confirmar" onclick="confirmarPagamento()" disabled aria-describedby="checkout-aceite-ajuda" class="w-full bg-dark hover:bg-black text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-dark">
+                    <i class="fa-solid fa-bolt texto-aviso"></i> Simular Pagamento Concluído
+                </button>
+            </div>
+
+            <button onclick="nav('campanha')" class="w-full texto-fraco hover-texto-forte text-sm font-bold flex items-center justify-center gap-2 py-2">
+                <i class="fa-solid fa-arrow-left"></i> Cancelar contribuição
+            </button>
+        </div>
+    </div>

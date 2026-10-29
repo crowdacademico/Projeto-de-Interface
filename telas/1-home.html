@@ -1,0 +1,134 @@
+<section class="superficie-escura py-32 relative overflow-hidden">
+    <div class="absolute inset-0 grade-medicao"></div>
+
+    <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+        <div class="chip-rf inline-flex items-center gap-2 veu-claro backdrop-blur-md texto-sobre-escuro px-3 py-2 rounded-full mb-6">Requisito Funcional: Captar atenção e apresentar o propósito</div>
+        <span class="inline-flex items-center gap-1.5 veu-claro backdrop-blur-sm texto-marca-sobre-escuro microrrotulo px-4 py-2 rounded-full mb-7">
+            <i class="fa-solid fa-shield-halved icone-com-maiusculas"></i> Perfil acadêmico público · Curadoria em toda campanha
+        </span>
+        <h1 class="titulo-hero texto-sobre-escuro-forte mb-8">Financie a próxima <br/>descoberta <span class="texto-marca-sobre-escuro">brasileira</span>.</h1>
+        <p class="paragrafo texto-sobre-escuro-forte mb-10 max-w-2xl mx-auto">Pesquisadores identificados, com perfil acadêmico público, publicam o projeto, o orçamento e o método. Você escolhe o que apoiar, a partir de R$ 5, via PIX.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <button onclick="nav('explorar')" class="btn btn-primary btn--grande shadow-marca hover:-translate-y-0.5">Ver projetos em captação</button>
+            <button onclick="nav('criar-campanha')" class="btn btn--grande veu-claro backdrop-blur-sm hover-veu-claro texto-sobre-escuro-forte">Submeter uma pesquisa</button>
+        </div>
+    </div>
+</section>
+
+<section class="fundo-cartao border-b borda-padrao py-16">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <span class="microrrotulo texto-marca">Seu apoio com segurança</span>
+            <h2 class="titulo-secao texto-forte mt-3">Um ambiente confiável para a ciência</h2>
+        </div>
+        <div id="home-confianca" class="home-confianca"></div>
+    </div>
+</section>
+
+
+<section class="max-w-7xl mx-auto px-4 pt-10 pb-2">
+    <h2 class="titulo-secao texto-forte mb-6 text-center">Explore comunidades incríveis</h2>
+    <div id="home-comunidades" class="flex flex-wrap justify-center gap-3"></div>
+</section>
+
+<section id="projetos" class="max-w-[1920px] mx-auto px-6 sm:px-10 lg:px-16 xl:px-20 py-20">
+    <div class="mb-16">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+            <div>
+                <h2 class="titulo-secao texto-forte">Em Alta</h2>
+                <p id="home-contagem-projetos" class="text-sm texto-fraco mt-1"></p>
+            </div>
+            <div class="flex items-center gap-3">
+                <label for="home-ordenacao-destaque" class="sr-only">Ordenar projetos em alta por</label>
+                <select id="home-ordenacao-destaque" class="fundo-cartao border borda-padrao text-sm font-medium texto-padrao rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary px-4 py-2.5 outline-none shadow-sm cursor-pointer">
+                    <option value="recentes">Mais recentes</option>
+                    <option value="percentual">Maior percentual atingido</option>
+                </select>
+                <div class="flex items-center gap-2">
+                    <button type="button" id="em-alta-anterior" aria-label="Ver projetos anteriores" class="hidden carrossel-cartoes__seta"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button type="button" id="em-alta-proximo" aria-label="Ver mais projetos" class="hidden carrossel-cartoes__seta"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="carrossel-cartoes" id="em-alta-carrossel">
+            <div id="project-cards" class="carrossel-cartoes__trilho hide-scrollbar"></div>
+        </div>
+        <div id="home-projetos-vazio" class="hidden"></div>
+
+        <div class="mt-12 text-center">
+            <button onclick="nav('explorar')" class="fundo-cartao border-2 borda-padrao texto-padrao font-bold py-3 px-8 rounded-xl hover-fundo-sutil hover-borda-forte hover-texto-forte transition-all shadow-sm">Ver todos os projetos</button>
+        </div>
+    </div>
+
+    <div>
+        <div class="flex justify-between items-center mb-8 gap-4">
+            <h2 class="titulo-secao texto-forte">Últimos Dias</h2>
+            <div class="flex items-center gap-2">
+                <button type="button" id="ultimos-dias-anterior" aria-label="Ver projetos anteriores" class="hidden carrossel-cartoes__seta"><i class="fa-solid fa-chevron-left"></i></button>
+                <button type="button" id="ultimos-dias-proximo" aria-label="Ver mais projetos" class="hidden carrossel-cartoes__seta"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
+        <div class="carrossel-cartoes" id="ultimos-dias-carrossel">
+            <div id="home-ultimos-dias" class="carrossel-cartoes__trilho hide-scrollbar"></div>
+        </div>
+    </div>
+</section>
+
+<section id="home-secao-em-breve" class="max-w-[1920px] mx-auto px-6 sm:px-10 lg:px-16 xl:px-20 pb-20">
+    <div class="flex justify-between items-center mb-8 gap-4">
+        <h2 class="titulo-secao texto-forte">Em Breve</h2>
+        <div class="flex items-center gap-2">
+            <button type="button" id="em-breve-anterior" aria-label="Ver projetos anteriores" class="hidden carrossel-cartoes__seta"><i class="fa-solid fa-chevron-left"></i></button>
+            <button type="button" id="em-breve-proximo" aria-label="Ver mais projetos" class="hidden carrossel-cartoes__seta"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+    <div class="carrossel-cartoes" id="em-breve-carrossel">
+        <div id="home-em-breve" class="carrossel-cartoes__trilho hide-scrollbar"></div>
+    </div>
+</section>
+
+<section class="bg-[var(--cor-institucional-fundo)] texto-sobre-escuro-forte py-14 relative overflow-hidden">
+    <div class="absolute inset-0 grade-medicao"></div>
+    <div id="home-stats" class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10"></div>
+</section>
+
+<section class="fundo-cartao home-como">
+    <div class="max-w-7xl mx-auto px-4 home-como__grade">
+        <div class="home-como__texto">
+            <span class="microrrotulo texto-marca">Como funciona</span>
+            <h2 class="titulo-secao texto-forte mt-3 mb-10">É simples apoiar uma pesquisa</h2>
+            <ol id="home-passos" class="home-passos"></ol>
+        </div>
+        <figure class="home-celular" aria-hidden="true">
+            <img src="imagens/faixa-como-funciona.jpg" alt="" class="home-celular__foto">
+        </figure>
+    </div>
+</section>
+
+<section class="fundo-cartao border-t borda-padrao py-20">
+    <div class="max-w-3xl mx-auto px-4">
+        <div class="text-center mb-10">
+            <span class="microrrotulo texto-marca">Perguntas frequentes</span>
+            <h2 class="titulo-secao texto-forte mt-3">Antes de apoiar ou submeter</h2>
+        </div>
+        <div id="home-perguntas" class="home-perguntas"></div>
+        <div class="text-center mt-8">
+            <button type="button" onclick="verTodasPerguntas()" class="inline-flex items-center gap-2 texto-marca font-bold hover:underline">Ver todas as perguntas <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+    </div>
+</section>
+
+<section class="home-pesquisadores">
+    <img src="imagens/faixa-pesquisadores.jpg" alt="" class="home-pesquisadores__foto">
+    <div class="home-pesquisadores__veu"></div>
+    <div class="max-w-7xl mx-auto px-4 py-20 relative z-10">
+        <span class="microrrotulo texto-marca-sobre-escuro">Para pesquisadores</span>
+        <h2 class="titulo-secao texto-sobre-escuro-forte mt-3 mb-4">Sua pesquisa pode ir mais longe</h2>
+        <p class="paragrafo texto-sobre-escuro-forte mb-8 max-w-xl">Publique o projeto com meta, orçamento e cronograma, receba apoio via PIX e preste contas a quem acreditou na sua pesquisa. Com ou sem vínculo institucional.</p>
+        <div class="flex flex-col sm:flex-row gap-4">
+            <button onclick="nav('criar-campanha')" class="btn btn-primary btn--grande shadow-marca hover:-translate-y-0.5">Submeter minha pesquisa</button>
+            <button onclick="nav('como-funciona')" class="btn btn--grande veu-claro backdrop-blur-sm hover-veu-claro texto-sobre-escuro-forte">Saiba como funciona</button>
+        </div>
+    </div>
+</section>

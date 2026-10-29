@@ -1,0 +1,99 @@
+<section class="pt-14 pb-24 relative overflow-hidden texto-sobre-escuro" style="background-color: var(--cor-cianotipo-800);">
+    <div class="absolute inset-0 grade-medicao"></div>
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+        <div class="chip-rf inline-flex items-center gap-2 veu-claro texto-sobre-escuro px-3 py-2 rounded-full mb-6">Requisito Funcional: <span class="rf-inline">RF-044 / RF-033</span>. Tela de detalhes de projeto com CTA de apoio</div>
+        <p class="text-sm font-medium texto-sobre-escuro mb-6 flex items-center gap-2"><span class="cursor-pointer hover-texto-sobre-escuro-forte transition" onclick="nav('home')"><i class="fa-solid fa-house text-xs"></i> Home</span> <i class="fa-solid fa-chevron-right text-microrrotulo"></i> Ciências Biológicas</p>
+        <span class="veu-claro texto-urgencia-sobre-escuro microrrotulo px-3 py-1.5 rounded-full mb-4 inline-block">Projeto Tudo ou Nada</span>
+        <h1 class="titulo-pagina texto-sobre-escuro-forte max-w-4xl mb-6">Análise do impacto de microplásticos na saúde de peixes nativos do Rio Paraná</h1>
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4 texto-sobre-escuro text-sm font-medium">
+            <a href="#" onclick="nav('perfil-pesquisador'); return false;" class="flex items-center gap-2 hover:underline"><span class="w-6 h-6 rounded-full fundo-marca-sobre-escuro flex items-center justify-center texto-sobre-escuro-forte font-bold text-xs">M</span> Dra. Marina Souza (UNESP)</a>
+            <span class="texto-sobre-escuro">|</span>
+            <span><i class="fa-solid fa-location-dot mr-1"></i> Ilha Solteira, SP</span>
+            <span class="inline-flex items-center gap-2 veu-claro texto-marca-sobre-escuro microrrotulo px-3 py-1 rounded-full">2 endossos aprovados</span>
+        </div>
+    </div>
+</section>
+
+<div class="max-w-7xl mx-auto px-4 -mt-16 pb-16 flex flex-col lg:flex-row gap-10 relative z-10">
+    <div class="flex-1">
+        <div class="w-full aspect-video bg-[var(--cor-tinta-900)] rounded-xl overflow-hidden relative flex items-center justify-center mb-10 shadow-2xl group cursor-pointer border-4 border-white">
+            <img src="imagens/projeto-computacao.jpg" alt="Vídeo de apresentação do projeto de pesquisa" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-700">
+            <div class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center z-10 group-hover:bg-primary transition-colors border border-white/30">
+                <i class="fa-solid fa-play text-white text-2xl ml-1"></i>
+            </div>
+            <span class="absolute bottom-4 left-4 bg-white/90 texto-padrao microrrotulo px-3 py-1 rounded-full border borda-padrao">Vídeo incorporado <span class="rf-inline">(RF-033)</span></span>
+        </div>
+
+        <div id="project-tab-buttons" class="sticky top-sticky z-sticky fundo-cartao rounded-xl shadow-sm border borda-padrao mb-8 p-2 flex gap-2 overflow-x-auto hide-scrollbar"></div>
+
+        <div class="fundo-cartao rounded-xl shadow-sm border borda-padrao p-8 md:p-10">
+            <div id="project-tab-panels"></div>
+        </div>
+    </div>
+
+    <div class="w-full lg:w-[400px] flex-shrink-0">
+        <div class="sticky top-24 space-y-6">
+
+            <div class="fundo-cartao rounded-xl border borda-padrao p-8 shadow-xl">
+                <div id="faixa-estado-campanha"></div>
+                <div class="mb-8">
+                    <div id="valor-arrecadado-campanha" class="numero numero--destaque texto-forte mb-2"><span class="numero__unidade">R$</span>22.750</div>
+                    <p id="legenda-meta-campanha" class="text-sm texto-fraco font-medium">arrecadados da meta de R$ 35.000</p>
+                </div>
+
+                <div id="area-escala-progresso-campanha" class="mb-6"></div>
+
+                <div class="grid grid-cols-3 gap-3 mb-8">
+                    <div class="fundo-destaque rounded-xl p-3 border borda-padrao text-center">
+                        <div id="stat-atingido-campanha" class="numero text-xl font-bold texto-forte">65%</div>
+                        <div class="microrrotulo texto-fraco">Atingido</div>
+                    </div>
+                    <div id="bloco-dias-campanha" class="fundo-aviso rounded-xl p-3 border borda-aviso text-center">
+                        <div id="stat-dias-campanha" class="numero text-xl font-bold texto-aviso">18</div>
+                        <div id="rotulo-dias-campanha" class="microrrotulo texto-aviso">Dias Restantes</div>
+                    </div>
+                    <div class="fundo-marca-sutil rounded-xl p-3 border borda-marca text-center">
+                        <div id="stat-apoios-campanha" class="numero text-xl font-bold texto-marca">47</div>
+                        <div class="microrrotulo texto-marca">Apoios</div>
+                    </div>
+                </div>
+
+                <button id="botao-apoiar-campanha" onclick="nav('checkout')" class="w-full bg-primary hover:bg-primary-dark text-white font-bold text-lg py-4 rounded-xl transition-all shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 flex items-center justify-center gap-2 mb-6">
+                    Apoiar esta Pesquisa <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+                <div class="border-t borda-padrao pt-6 mb-6">
+                    <p class="rotulo mb-3">Apoiadores recentes</p>
+                    <div id="apoiadores-recentes-campanha"></div>
+                </div>
+
+                <details class="rounded-xl border borda-padrao fundo-sutil p-4 text-sm texto-padrao">
+                    <summary class="font-semibold texto-forte cursor-pointer select-none">Como funciona o modelo Tudo ou Nada</summary>
+                    <div id="project-support-info" class="mt-4 leading-relaxed"></div>
+                </details>
+            </div>
+
+            <div class="cartao">
+                <h2 class="rotulo mb-5 border-b borda-padrao pb-3">Pesquisador Responsável</h2>
+                <a href="#" onclick="nav('perfil-pesquisador'); return false;" class="flex items-center gap-4 mb-5 hover:opacity-80 transition-opacity">
+                    <div class="w-14 h-14 fundo-sucesso border borda-sucesso texto-sucesso rounded-full flex items-center justify-center text-xl font-black shadow-inner">M</div>
+                    <div>
+                        <div class="font-bold texto-forte text-base">Dra. Marina Souza</div>
+                        <div class="text-xs texto-fraco mb-0.5">Laboratório de Ecologia Aquática</div>
+                        <div class="text-xs font-bold texto-padrao mb-1">UNESP Ilha Solteira</div>
+                        <div class="selo-verificado text-xs"><i class="fa-solid fa-circle-check"></i> Pesquisador desde 12/01/2026</div>
+                    </div>
+                </a>
+                <a href="#" onclick="mostrarAcao('Link Lattes aberto.'); return false;" class="w-full inline-flex justify-center items-center gap-2 border-2 borda-padrao texto-padrao hover-borda-forte hover-fundo-sutil text-sm font-bold py-3 rounded-xl transition-all">
+                    <i class="fa-solid fa-link texto-fraco"></i> Ver Currículo Lattes
+                </a>
+
+                <div class="mt-6 pt-4 border-t borda-padrao text-center">
+                    <button onclick="mostrarAcao('Denúncia simulada. A moderação é parte do fluxo prototipado.');" class="text-xs font-bold texto-fraco hover-texto-erro transition flex items-center justify-center w-full gap-1.5">
+                        <i class="fa-regular fa-flag"></i> Denunciar irregularidade
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

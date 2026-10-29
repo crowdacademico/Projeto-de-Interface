@@ -1,0 +1,58 @@
+export const CAMPANHA_ATUALIZACOES = {
+  projeto: 'Análise do impacto de microplásticos na saúde de peixes nativos do Rio Paraná',
+  percentualAtual: 65,
+  valorAtual: 'R$ 22.750',
+  valorMeta: 'R$ 35.000',
+  modelo: 'tudo-ou-nada',
+};
+
+export const POSTS_ATUALIZACOES = [
+  {
+    id: 'post-4',
+    tipo: 'marco',
+    data: '28/07/2026',
+    titulo: '65% da meta atingida',
+    autor: null,
+    corpo: 'A campanha ultrapassou R$ 22.750 arrecadados, com 94 apoiadores únicos.',
+    visibilidade: 'publico',
+  },
+  {
+    id: 'post-3',
+    tipo: 'post',
+    data: '22/07/2026',
+    titulo: 'Resultados preliminares da segunda coleta',
+    autor: 'Dra. Marina Souza',
+    corpo: 'As primeiras 24 amostras da coleta de março já foram processadas. A concentração de microplásticos na área de maior pressão urbana está cerca de 3x acima da encontrada em pontos de referência. Os dados completos, com a metodologia de identificação por espectroscopia, seguem em análise estatística antes da publicação.',
+    imagem: null,
+    visibilidade: 'apoiador',
+  },
+  {
+    id: 'post-2',
+    tipo: 'post',
+    data: '10/06/2026',
+    titulo: 'Parceria com laboratório local',
+    autor: 'Dra. Marina Souza',
+    corpo: 'A equipe passou a contar com suporte do Laboratório de Espectroscopia Ambiental da UFSCar para validação cruzada dos espectros. Isso deve acelerar a fase de identificação sem custo adicional ao orçamento original.',
+    imagem: null,
+    visibilidade: 'publico',
+  },
+  {
+    id: 'post-1',
+    tipo: 'marco',
+    data: '02/05/2026',
+    titulo: 'Meta de 50% atingida',
+    autor: null,
+    corpo: 'Em pouco mais de um mês de campanha, a captação já passava da metade da meta total.',
+    visibilidade: 'publico',
+  },
+  {
+    id: 'post-0',
+    tipo: 'post',
+    data: '18/04/2026',
+    titulo: 'Nova coleta realizada em campo',
+    autor: 'Dra. Marina Souza',
+    corpo: 'Concluímos a segunda etapa de coleta em três pontos do Rio Paraná com maior pressão urbana e agrícola. Ao todo, 24 novas amostras foram catalogadas e seguem agora para análise em laboratório.',
+    imagem: null,
+    visibilidade: 'publico',
+  },
+];

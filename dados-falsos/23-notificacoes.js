@@ -1,0 +1,42 @@
+export const NOTIFICACOES_FALSAS = [
+  {
+    id: 1,
+    lida: false,
+    icone: 'fa-hand-holding-dollar',
+    titulo: 'Sua contribuição foi confirmada',
+    corpo: 'R$ 150,00 para "Análise de Microplásticos no Rio Paraná".',
+    data: 'Há 2 horas',
+  },
+  {
+    id: 2,
+    lida: false,
+    icone: 'fa-bullhorn',
+    titulo: 'Nova atualização de um projeto que você apoia',
+    corpo: 'Dra. Marina Souza publicou "Resultados preliminares da segunda coleta".',
+    data: 'Há 1 dia',
+  },
+  {
+    id: 3,
+    lida: true,
+    icone: 'fa-circle-check',
+    titulo: 'Vínculo institucional revalidado',
+    corpo: 'Seu vínculo com a UNESP Ilha Solteira foi confirmado por mais 12 meses.',
+    data: 'Há 3 dias',
+  },
+  {
+    id: 4,
+    lida: true,
+    icone: 'fa-flag',
+    titulo: 'Meta de 50% atingida',
+    corpo: 'Uma campanha que você segue passou da metade da meta de captação.',
+    data: 'Há 1 semana',
+  },
+  {
+    id: 5,
+    lida: true,
+    icone: 'fa-gavel',
+    titulo: 'Campanha aprovada pela curadoria',
+    corpo: 'Sua campanha entrou em captação e já está visível publicamente.',
+    data: 'Há 2 semanas',
+  },
+];

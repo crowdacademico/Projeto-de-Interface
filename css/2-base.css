@@ -1,0 +1,398 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  min-height: 100vh;
+}
+
+html {
+  font-size: calc(16px * var(--escala-fonte));
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  background-color: var(--cor-fundo-pagina);
+  color: var(--cor-texto-forte);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color var(--duracao-rapida) var(--curva-suave), color var(--duracao-rapida) var(--curva-suave);
+}
+
+h1 {
+  font-family: var(--font-serif);
+  color: var(--cor-texto-forte);
+  font-weight: 600;
+  font-variation-settings: 'opsz' 120, 'SOFT' 20;
+}
+h2 {
+  font-family: var(--font-serif);
+  color: var(--cor-texto-forte);
+  font-weight: 600;
+  font-variation-settings: 'opsz' 60, 'SOFT' 10;
+}
+h3 {
+  font-family: var(--font-serif);
+  color: var(--cor-texto-forte);
+  font-weight: 700;
+  font-variation-settings: 'opsz' 24;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--anel-foco);
+  border-radius: var(--radius-sm);
+}
+
+.pular-conteudo {
+  position: absolute;
+  top: -3rem;
+  left: var(--espaco-4);
+  z-index: var(--z-modal);
+  background-color: var(--cor-fundo-elevado);
+  color: var(--cor-texto-forte);
+  padding: var(--espaco-3) var(--espaco-5);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-weight: 700;
+  font-size: var(--font-size-corpo-pequeno);
+  transition: top var(--duracao-normal) var(--curva-suave);
+}
+.pular-conteudo:focus {
+  top: var(--espaco-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.view-section {
+  display: none;
+  opacity: 0;
+  transition: opacity var(--duracao-lenta) var(--curva-suave);
+}
+.view-section.active {
+  display: block;
+  opacity: 1;
+}
+.app-shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100vh;
+}
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
+
+:root .chip-rf,
+:root .rf-inline {
+  display: none;
+}
+
+.fundo-pagina {
+  background-color: var(--cor-fundo-pagina);
+}
+.fundo-cartao {
+  background-color: var(--cor-fundo-cartao);
+}
+.fundo-elevado {
+  background-color: var(--cor-fundo-elevado);
+}
+.fundo-sutil {
+  background-color: var(--cor-fundo-sutil);
+}
+
+.fundo-destaque {
+  background-color: var(--cor-fundo-destaque);
+}
+.hover-fundo-sutil:hover {
+  background-color: var(--cor-fundo-hover);
+}
+.fundo-realce {
+  background-color: var(--cor-fundo-hover);
+}
+.texto-forte {
+  color: var(--cor-texto-forte);
+}
+.texto-padrao {
+  color: var(--cor-texto);
+}
+.texto-fraco {
+  color: var(--cor-texto-fraco);
+}
+.hover-texto-forte:hover {
+  color: var(--cor-texto-forte);
+}
+.borda-padrao {
+  border-color: var(--cor-borda);
+}
+.borda-forte {
+  border-color: var(--cor-borda-forte);
+}
+.hover-borda-forte:hover {
+  border-color: var(--cor-borda-forte);
+}
+
+.borda-sobre-escuro {
+  border-color: var(--cor-sobre-escuro-borda);
+}
+.fundo-sucesso {
+  background-color: var(--cor-fundo-sucesso);
+}
+.texto-sucesso {
+  color: var(--cor-texto-sucesso);
+}
+.borda-sucesso {
+  border-color: var(--cor-borda-sucesso);
+}
+.fundo-erro {
+  background-color: var(--cor-fundo-erro);
+}
+.texto-erro {
+  color: var(--cor-texto-erro);
+}
+.hover-texto-erro:hover {
+  color: var(--cor-texto-erro);
+}
+.borda-erro {
+  border-color: var(--cor-borda-erro);
+}
+.fundo-aviso {
+  background-color: var(--cor-fundo-aviso);
+}
+.texto-aviso {
+  color: var(--cor-texto-aviso);
+}
+.borda-aviso {
+  border-color: var(--cor-borda-aviso);
+}
+.fundo-info {
+  background-color: var(--cor-fundo-info);
+}
+.texto-info {
+  color: var(--cor-texto-info);
+}
+.borda-info {
+  border-color: var(--cor-borda-info);
+}
+
+.ponto-neutro {
+  background-color: var(--cor-texto-fraco);
+}
+.ponto-sucesso {
+  background-color: var(--cor-texto-sucesso);
+}
+.ponto-info {
+  background-color: var(--cor-texto-info);
+}
+.ponto-erro {
+  background-color: var(--cor-texto-erro);
+}
+
+.fundo-marca-sutil {
+  background-color: var(--cor-marca-sutil);
+}
+.fundo-marca {
+  background-color: var(--cor-marca);
+}
+.texto-marca {
+  color: var(--cor-marca-texto);
+}
+.borda-marca {
+  border-color: var(--cor-marca-borda);
+}
+.fundo-institucional {
+  background-color: var(--cor-institucional);
+}
+.fundo-institucional-sutil {
+  background-color: var(--cor-institucional-sutil);
+}
+.texto-institucional {
+  color: var(--cor-institucional-texto);
+}
+.fundo-urgencia-sutil {
+  background-color: var(--cor-urgencia-sutil);
+}
+.texto-urgencia {
+  color: var(--cor-urgencia-texto);
+}
+
+.superficie-escura {
+  background: var(--gradiente-hero);
+  color: var(--cor-sobre-escuro-corpo);
+}
+.texto-sobre-escuro {
+  color: var(--cor-sobre-escuro-corpo);
+}
+.texto-sobre-escuro-forte {
+  color: var(--cor-sobre-escuro-titulo);
+}
+.texto-sobre-escuro-fraco {
+  color: var(--cor-sobre-escuro-fraco);
+}
+
+.hover-texto-sobre-escuro-forte:hover {
+  color: var(--cor-sobre-escuro-titulo);
+}
+.veu-claro {
+  background-color: var(--cor-sobre-escuro-veu);
+  border: 1px solid var(--cor-sobre-escuro-borda);
+}
+
+.hover-veu-claro:hover {
+  background-color: color-mix(in srgb, var(--cor-sobre-escuro-titulo) 15%, var(--cor-sobre-escuro-veu));
+}
+.texto-marca-sobre-escuro {
+  color: var(--cor-marca-sobre-escuro);
+}
+.fundo-marca-sobre-escuro {
+  background-color: var(--cor-marca-sobre-escuro);
+}
+.texto-urgencia-sobre-escuro {
+  color: var(--cor-urgencia-sobre-escuro);
+}
+.fundo-urgencia-sobre-escuro {
+  background-color: var(--cor-urgencia-sobre-escuro);
+}
+
+.tabela-dividida > * + * {
+  border-top: 1px solid var(--cor-borda);
+}
+
+.rotulo-campo {
+  display: block;
+  font-size: var(--font-size-rotulo);
+  font-weight: 900;
+  color: var(--cor-texto-fraco);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--espaco-2);
+}
+.microrrotulo {
+  font-size: var(--font-size-microrrotulo);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  line-height: 1.1;
+}
+.rotulo {
+  font-size: var(--font-size-rotulo);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  color: var(--cor-texto-fraco);
+}
+.legenda {
+  font-size: var(--font-size-legenda);
+  line-height: 1.45;
+  color: var(--cor-texto-fraco);
+}
+
+.paragrafo-denso {
+  font-family: var(--font-dado);
+  font-size: var(--font-size-legenda);
+  color: var(--cor-texto-fraco);
+}
+
+.paragrafo {
+  font-size: var(--font-size-corpo);
+  line-height: 1.65;
+  max-width: var(--largura-leitura);
+}
+
+.subtitulo {
+  font-size: var(--font-size-subtitulo);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+/* Classes de título ficam FORA de @layer: dentro, o preflight do Tailwind ganha e o título sai com 14px. */
+.titulo-secao {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-titulo-secao);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-variation-settings: 'opsz' 60, 'SOFT' 10;
+}
+
+.titulo-secao--sans {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  letter-spacing: normal;
+  font-variation-settings: normal;
+}
+.titulo-pagina {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-titulo-pagina);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.022em;
+  font-variation-settings: 'opsz' 80, 'SOFT' 15;
+}
+.titulo-hero {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-titulo-hero);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  font-variation-settings: 'opsz' 120, 'SOFT' 20;
+}
+.numero {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: -0.01em;
+}
+.numero--kpi {
+  font-size: var(--font-size-numero-kpi);
+  font-weight: 800;
+  line-height: 1;
+}
+.numero--destaque {
+  font-size: var(--font-size-numero-destaque);
+  font-weight: 800;
+  line-height: 1;
+}
+.numero--vitrine {
+  font-size: var(--font-size-numero-vitrine);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.numero__unidade {
+  font-size: 0.5em;
+  font-weight: 700;
+  vertical-align: 0.35em;
+  margin-right: 0.15em;
+  color: var(--cor-texto-fraco);
+}

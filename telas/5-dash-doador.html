@@ -1,0 +1,60 @@
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="chip-rf inline-flex items-center gap-2 fundo-realce texto-padrao px-3 py-2 rounded-full border borda-padrao mb-6">Requisito Funcional: Painel do apoiador com histórico e navegação</div>
+        <h1 class="sr-only">Painel do doador</h1>
+    </div>
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="painel-conta-shell">
+        <aside class="painel-conta-sidebar" aria-label="Conta do doador">
+            <div class="flex items-center gap-4 mb-8 p-3 fundo-sutil rounded-xl border borda-padrao">
+                <div class="w-14 h-14 fundo-realce texto-padrao rounded-xl flex items-center justify-center font-bold text-xl shadow-inner"><i class="fa-solid fa-user"></i></div>
+                <div>
+                    <div class="font-black texto-forte">Doador Padrão</div>
+                    <div class="text-xs texto-fraco font-medium mt-0.5">Membro desde 2026</div>
+                </div>
+            </div>
+
+            <nav id="donor-sidebar-nav" class="space-y-2 mb-8" aria-label="Navegação do painel do doador"></nav>
+            <p class="chip-rf text-microrrotulo texto-fraco mb-6">RF-012/RF-013: disponível somente para usuários com perfil de Pesquisador. Complete seu perfil para liberar essa aba.</p>
+
+            <div class="fundo-institucional-sutil border borda-padrao rounded-xl p-5 text-center relative overflow-hidden group">
+                <i class="fa-solid fa-graduation-cap texto-institucional text-3xl mb-3"></i>
+                <h2 class="subtitulo texto-institucional mb-2">É um pesquisador?</h2>
+                <p class="text-xs texto-padrao font-medium mb-4 leading-relaxed">Complete seu perfil acadêmico (vínculo, título e links como Lattes ou ORCID) para criar campanhas e captar recursos.</p>
+                <button onclick="nav('dash-pesquisador')" class="w-full fundo-institucional hover:opacity-90 texto-sobre-escuro-forte text-xs font-bold py-3 rounded-xl shadow-md transition-all">Solicitar Perfil Científico</button>
+            </div>
+        </aside>
+
+        <div class="painel-conta-area space-y-8">
+            <h2 class="titulo-secao texto-forte">Histórico de Contribuições <span class="rf-inline">(RF-007)</span></h2>
+            <div id="donor-metrics" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+
+            <div>
+                <h3 class="subtitulo mb-4">Novidades dos projetos que você apoiou</h3>
+                <div id="donor-novidades" class="space-y-4"></div>
+            </div>
+
+            <div>
+                <h3 class="subtitulo mb-4">Campanhas seguidas</h3>
+                <div id="donor-followed-campaigns" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div class="fundo-cartao rounded-2xl shadow-sm border borda-padrao overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full tabela-dividida">
+                        <thead class="fundo-sutil">
+                            <tr>
+                                <th class="px-8 py-5 text-left rotulo">Data</th>
+                                <th class="px-8 py-5 text-left rotulo">Projeto Apoiado</th>
+                                <th class="px-8 py-5 text-right rotulo">Valor</th>
+                                <th class="px-8 py-5 text-left rotulo">Pagamento</th>
+                                <th class="px-8 py-5 text-left rotulo">Status <span class="rf-inline">(RF-051)</span></th>
+                                <th class="px-8 py-5 text-right rotulo"><span class="sr-only">Ações</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="donor-contributions" class="fundo-cartao tabela-dividida text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>

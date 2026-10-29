@@ -1,0 +1,79 @@
+<div class="fundo-pagina py-10 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="cabecalho-catalogo mb-8 pb-5 border-b borda-padrao">
+            <span class="cabecalho-catalogo__rotulo">Catálogo de projetos</span>
+            <h1 class="titulo-secao mb-2">Explorar projetos</h1>
+            <p id="explorar-contagem" class="paragrafo-denso"></p>
+        </div>
+
+        <div class="mb-8">
+            <div class="busca-catalogo max-w-xl">
+                <span class="busca-catalogo__indice" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <label for="explorar-busca" class="sr-only">Buscar por título, pesquisador ou instituição</label>
+                <input id="explorar-busca" type="search" placeholder="Buscar por título, pesquisador ou instituição..." class="busca-catalogo__campo">
+            </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-10">
+            <aside class="w-full lg:w-72 flex-shrink-0" aria-label="Filtros de projetos">
+                <div class="cartao sticky top-24">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="subtitulo texto-forte flex items-center gap-2"><i class="fa-solid fa-filter texto-fraco"></i> Filtros</h2>
+                        <button type="button" id="explorar-limpar-filtros" class="text-xs font-bold text-primary hover:underline">Limpar</button>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="rotulo mb-3">Status</h3>
+                        <div class="flex flex-wrap gap-2" id="explorar-filtro-status">
+                            <label class="filtro-chip"><input type="radio" name="explorar-status" value="todos" checked class="sr-only"> Todos</label>
+                            <label class="filtro-chip"><input type="radio" name="explorar-status" value="em-captacao" class="sr-only"> Em captação</label>
+                            <label class="filtro-chip"><input type="radio" name="explorar-status" value="em-breve" class="sr-only"> Em breve</label>
+                            <label class="filtro-chip"><input type="radio" name="explorar-status" value="financiada" class="sr-only"> Financiados</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="rotulo mb-3">Área de Conhecimento</h3>
+                        <div class="flex flex-wrap gap-2" id="explorar-filtro-area">
+                            <label class="filtro-chip"><input type="checkbox" value="biologicas" class="explorar-checkbox-area sr-only"> Ciências Biológicas</label>
+                            <label class="filtro-chip"><input type="checkbox" value="exatas" class="explorar-checkbox-area sr-only"> Exatas e Engenharias</label>
+                            <label class="filtro-chip"><input type="checkbox" value="saude" class="explorar-checkbox-area sr-only"> Ciências da Saúde</label>
+                            <label class="filtro-chip"><input type="checkbox" value="humanas" class="explorar-checkbox-area sr-only"> Ciências Humanas</label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="rotulo mb-3">Modelo de Financiamento</h3>
+                        <div class="flex flex-wrap gap-2" id="explorar-filtro-modelo">
+                            <label class="filtro-chip"><input type="radio" name="explorar-modelo" value="todos" checked class="sr-only"> Todos</label>
+                            <label class="filtro-chip"><input type="radio" name="explorar-modelo" value="tudo-ou-nada" class="sr-only"> Tudo ou Nada</label>
+                            <label class="filtro-chip"><input type="radio" name="explorar-modelo" value="flexivel" class="sr-only"> Flexível</label>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="flex-1 min-w-0">
+                <div class="barra-controles-catalogo flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <div id="explorar-fichas-filtros" class="flex flex-wrap gap-2"></div>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <div class="flex items-center border borda-padrao rounded-lg overflow-hidden" role="group" aria-label="Modo de exibição">
+                            <button type="button" id="explorar-modo-grade" aria-pressed="true" aria-label="Ver em grade" class="w-9 h-9 flex items-center justify-center fundo-realce texto-forte"><i class="fa-solid fa-grip"></i></button>
+                            <button type="button" id="explorar-modo-lista" aria-pressed="false" aria-label="Ver em lista" class="w-9 h-9 flex items-center justify-center texto-fraco hover-fundo-sutil transition-colors"><i class="fa-solid fa-list"></i></button>
+                        </div>
+                        <label for="explorar-ordenacao" class="rotulo shrink-0">Ordenar por</label>
+                        <select id="explorar-ordenacao" class="input-padrao sm:max-w-xs">
+                            <option value="recentes">Mais recentes</option>
+                            <option value="percentual">Maior percentual atingido</option>
+                            <option value="prazo">Encerrando em breve</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="explorar-grade" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"></div>
+                <div id="explorar-vazio" class="hidden"></div>
+                <div id="explorar-paginacao" class="mt-10 text-center"></div>
+            </div>
+        </div>
+    </div>
+</div>

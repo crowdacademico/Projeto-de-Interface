@@ -1,0 +1,50 @@
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+}
+.status-pill-square {
+  border-radius: var(--radius-sm);
+}
+.status-pill-compact {
+  gap: 0.25rem;
+  padding: 0.2rem 0.75rem;
+  font-size: var(--font-size-microrrotulo);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.count-badge {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-microrrotulo);
+  font-weight: 900;
+  padding: 0.125rem 0.5rem;
+  line-height: 1;
+}
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-microrrotulo);
+  font-weight: 700;
+  line-height: 1;
+}

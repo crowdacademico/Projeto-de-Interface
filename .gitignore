@@ -1,0 +1,7 @@
+# Pastas e arquivos locais do projeto
+informacoes/
+
+# Arquivos temporários
+*.log
+.DS_Store
+Thumbs.db

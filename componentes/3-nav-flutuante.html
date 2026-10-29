@@ -1,0 +1,31 @@
+<div class="fixed bottom-4 right-4 z-dev flex flex-col items-end gap-2">
+    <div id="painel-telas-prototipo" class="hidden bg-dark text-white rounded-xl shadow-2xl text-xs font-mono border border-slate-700 w-80 max-h-[60vh] overflow-y-auto">
+        <div class="sticky top-0 bg-dark flex items-center justify-between px-4 py-3 border-b border-slate-700">
+            <span class="font-bold texto-sobre-escuro-forte text-microrrotulo uppercase">Todas as telas do protótipo</span>
+            <button type="button" onclick="fecharPainelTelas()" aria-label="Fechar painel de telas" class="texto-sobre-escuro-fraco hover-texto-sobre-escuro-forte"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="p-4">
+            <div class="microrrotulo texto-sobre-escuro-fraco mb-1.5">Login de teste</div>
+            <div class="grid grid-cols-2 gap-2 mb-4">
+                <button onclick="entrarComoUsuarioTeste(1)" class="bg-slate-800 hover:bg-primary px-3 py-2 rounded text-left transition-colors"><i class="fa-solid fa-right-to-bracket"></i> Entrar como Usuário Comum</button>
+                <button onclick="entrarComoUsuarioTeste(2)" class="bg-slate-800 hover:bg-primary px-3 py-2 rounded text-left transition-colors"><i class="fa-solid fa-right-to-bracket"></i> Entrar como Pesquisador</button>
+                <button onclick="sairUsuarioTeste()" class="col-start-2 bg-slate-800 hover:bg-primary px-3 py-2 rounded text-left transition-colors"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+            </div>
+
+            <div id="grupos-telas-prototipo"></div>
+
+            <div class="microrrotulo texto-sobre-escuro-fraco mb-1.5">Estado da campanha (tela 10)</div>
+            <div class="grid grid-cols-1 gap-2 mb-4">
+                <button onclick="definirEstadoCampanha('em-captacao')" class="bg-slate-800 hover:bg-emerald-600 px-3 py-2 rounded text-left transition-colors">Em captação</button>
+                <button onclick="definirEstadoCampanha('em-breve')" class="bg-slate-800 hover:bg-emerald-600 px-3 py-2 rounded text-left transition-colors">Em breve</button>
+                <button onclick="definirEstadoCampanha('financiada')" class="bg-slate-800 hover:bg-emerald-600 px-3 py-2 rounded text-left transition-colors">Financiada</button>
+                <button onclick="definirEstadoCampanha('nao-financiada')" class="bg-slate-800 hover:bg-emerald-600 px-3 py-2 rounded text-left transition-colors">Não financiada</button>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" id="botao-painel-telas" onclick="alternarPainelTelas()" aria-expanded="false" aria-controls="painel-telas-prototipo" class="bg-dark hover:bg-black text-white text-xs font-mono font-bold px-4 py-3 rounded-full shadow-2xl border border-slate-700 flex items-center gap-2 transition-colors">
+        <i class="fa-solid fa-list-ul"></i> Telas do protótipo
+    </button>
+</div>
