@@ -5,7 +5,7 @@ import { atualizarCabecalhoConta } from './7-cabecalho.js';
 import { renderizarTelaMinhaConta } from './10-minha-conta.js';
 import { mostrarAcao } from './1-utilitarios.js';
 
-const ORDEM_GRUPOS = ['Navegação pública', 'Conta', 'Fluxo de apoio', 'Painéis internos', 'Outras'];
+const ORDEM_GRUPOS = ['Navegação pública', 'Conta', 'Fluxo de apoio', 'Área do pesquisador', 'Outras'];
 
 export function renderNavFlutuante() {
   const container = document.getElementById('grupos-telas-prototipo');

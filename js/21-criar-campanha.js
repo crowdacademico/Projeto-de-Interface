@@ -287,7 +287,7 @@ function aplicarRascunho(rascunho) {
 export function submeterCriarCampanha() {
   limparRascunho();
   mostrarAcao('Projeto submetido. Status: aguardando aprovação da curadoria.');
-  nav('dash-pesquisador');
+  nav('home');
 }
 
 function descartarRascunho() {

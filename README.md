@@ -53,7 +53,7 @@ em `index.html`).
 
 ## Login de teste
 
-Não existe backend nem senha de verdade. O botão **Telas do protótipo** (canto inferior direito) tem **Entrar como Usuário Comum**, **Entrar como Pesquisador** e **Sair**. O Usuário Comum só apoia campanhas (painel do doador e Minha Conta). O Pesquisador também é usuário comum e abre ainda o painel do pesquisador e o Criar Projeto. Na tela de Login, os e-mails `usuario@crowdacademico.com.br` e `pesquisador@crowdacademico.com.br`, com qualquer senha, também entram.
+Não existe backend nem senha de verdade. O botão **Telas do protótipo** (canto inferior direito) tem **Entrar como Usuário Comum**, **Entrar como Pesquisador** e **Sair**. Os painéis do doador e do pesquisador não fazem parte deste protótipo. A área **Criar Projeto** continua disponível. Na tela de Login, os e-mails `usuario@crowdacademico.com.br` e `pesquisador@crowdacademico.com.br`, com qualquer senha, também entram.
 
 ## O que o protótipo NÃO tem
 

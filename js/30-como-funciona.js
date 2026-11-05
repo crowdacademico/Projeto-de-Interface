@@ -10,9 +10,8 @@ import {
 import { homeProfiles } from '../dados-falsos/7-home.js';
 
 import { PROJETOS_FALSOS } from '../dados-falsos/13-projetos.js';
-import { donorContributions } from '../dados-falsos/9-dash-doador.js';
+import { CONTRIBUICOES_EXEMPLO } from '../dados-falsos/14-como-funciona.js';
 import { PERFIL_PESQUISADOR_FALSO } from '../dados-falsos/15-perfil-pesquisador.js';
-import { APROVACOES_PENDENTES_FALSAS } from '../dados-falsos/14-como-funciona.js';
 
 function htmlTituloComDestaque(heading, destaque) {
   const partes = heading.split(destaque).map((parte) => escaparHtml(parte));
@@ -43,7 +42,7 @@ function htmlMockupPorIndice(indice) {
 
     return `
       <span class="microrrotulo texto-fraco mb-3 block">Suas contribuições</span>
-      ${donorContributions.map((c) => `
+      ${CONTRIBUICOES_EXEMPLO.map((c) => `
         <div class="perfil-vitrine__mockup-linha">
           <div class="min-w-0 flex-1">
             <div class="text-corpo-pequeno font-bold texto-forte truncate">${escaparHtml(c.project)}</div>
@@ -72,24 +71,14 @@ function htmlMockupPorIndice(indice) {
     `;
   }
 
-  return `
-    <span class="microrrotulo texto-fraco mb-3 block">Aprovar campanhas</span>
-    ${APROVACOES_PENDENTES_FALSAS.map((a) => `
-      <div class="perfil-vitrine__mockup-linha">
-        <div class="min-w-0 flex-1">
-          <div class="text-corpo-pequeno font-bold texto-forte truncate">${escaparHtml(a.projeto)}</div>
-          <div class="legenda">${escaparHtml(a.pesquisador)}</div>
-        </div>
-        <span class="badge ${a.classeModelo}">${escaparHtml(a.modelo)}</span>
-      </div>
-    `).join('')}
-  `;
+  return '';
 }
 
 function renderizarPerfis() {
   const container = document.getElementById('como-funciona-perfis');
   if (!container) return;
-  container.innerHTML = homeProfiles.map((profile, indice) => `
+  const perfisExibidos = homeProfiles.slice(0, 3);
+  container.innerHTML = perfisExibidos.map((profile, indice) => `
     <div class="perfil-vitrine ${indice % 2 === 1 ? 'perfil-vitrine--invertido' : ''}">
       <div class="perfil-vitrine__painel relative overflow-hidden">
         <div class="absolute inset-0 grade-medicao"></div>
@@ -99,7 +88,7 @@ function renderizarPerfis() {
         </div>
       </div>
       <div class="perfil-vitrine__conteudo">
-        <span class="cabecalho-catalogo__rotulo">Perfil ${String(indice + 1).padStart(2, '0')} de ${homeProfiles.length}</span>
+        <span class="cabecalho-catalogo__rotulo">Perfil ${String(indice + 1).padStart(2, '0')} de ${perfisExibidos.length}</span>
         <h3 class="titulo-secao mb-0">${htmlTituloComDestaque(profile.heading, profile.destaque)}</h3>
         <ul class="perfil-vitrine__lista">
           ${profile.beneficios.map((beneficio) => `

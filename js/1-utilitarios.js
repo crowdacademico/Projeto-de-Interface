@@ -78,53 +78,6 @@ export function htmlEstadoVazio({ icone = 'fa-inbox', titulo, mensagem, acaoHtml
   `;
 }
 
-export function htmlGraficoLinha(pontos) {
-  const largura = 400;
-  const altura = 140;
-  const margem = 12;
-  const valores = pontos.map((p) => p.valorMil);
-  const max = Math.max(...valores);
-  const min = 0;
-  const passoX = (largura - margem * 2) / (pontos.length - 1);
-  const coordenadas = pontos.map((p, i) => {
-    const x = margem + i * passoX;
-    const y = altura - margem - ((p.valorMil - min) / (max - min)) * (altura - margem * 2);
-    return { x, y, ...p };
-  });
-  const linha = coordenadas.map((c) => `${c.x.toFixed(1)},${c.y.toFixed(1)}`).join(' ');
-  const area = `${margem},${altura - margem} ${linha} ${coordenadas[coordenadas.length - 1].x.toFixed(1)},${altura - margem}`;
-
-  return `
-    <svg viewBox="0 0 ${largura} ${altura}" class="w-full h-auto" role="img" aria-label="Gráfico de linha: captação mensal, de ${pontos[0].mes} (R$ ${pontos[0].valorMil} mil) a ${pontos[pontos.length - 1].mes} (R$ ${pontos[pontos.length - 1].valorMil} mil)">
-      <polygon points="${area}" fill="var(--cor-marca-sutil)" />
-      <polyline points="${linha}" fill="none" stroke="var(--cor-marca)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
-      ${coordenadas.map((c) => `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="3" fill="var(--cor-marca)" />`).join('')}
-    </svg>
-    <div class="flex justify-between mt-2 text-xs texto-fraco">
-      ${pontos.map((p) => `<span>${escaparHtml(p.mes)}</span>`).join('')}
-    </div>
-  `;
-}
-
-export const TONS_STATUS = {
-  sucesso: 'fundo-sucesso texto-sucesso',
-  sucessoForte: 'fundo-sucesso texto-sucesso',
-  aviso: 'fundo-aviso texto-aviso',
-  avisoForte: 'fundo-aviso texto-aviso',
-  info: 'fundo-info texto-info',
-  infoForte: 'fundo-info texto-info',
-  perigo: 'fundo-erro texto-erro',
-  perigoForte: 'fundo-erro texto-erro',
-  neutro: 'fundo-realce texto-padrao',
-  institucional: 'fundo-institucional-sutil texto-institucional',
-  urgencia: 'fundo-urgencia-sutil texto-urgencia',
-};
-
-export function classeStatus(item) {
-  if (!item) return '';
-  return item.classeStatus || TONS_STATUS[item.tomStatus] || '';
-}
-
 export function mostrarAcao(mensagem) {
   mostrarAviso(mensagem);
 }
@@ -251,23 +204,4 @@ export function htmlSeloReputacao(pontuacao) {
             <span class="selo-reputacao__rotulo">${escaparHtml(faixa.rotulo)}</span>
         </span>
     `;
-}
-
-export function renderMenuLateralPainel(idContainer, itens) {
-  const container = document.getElementById(idContainer);
-  if (!container) return;
-  container.innerHTML = itens
-    .map((item) => {
-      const classe = item.ativo
-        ? 'painel-conta-item painel-conta-item--ativo'
-        : item.desabilitado
-          ? 'painel-conta-item painel-conta-item--desabilitado'
-          : 'painel-conta-item';
-      return `
-                <button type="button" class="${classe}" ${item.desabilitado ? 'disabled' : ''} ${item.mensagem ? `onclick="mostrarAcao('${escaparAtributo(item.mensagem)}')"` : ''}>
-                    <span class="flex items-center gap-3"><i class="fa-solid ${item.icone} w-4"></i> ${escaparHtml(item.rotulo)}</span>
-                </button>
-            `;
-    })
-    .join('');
 }

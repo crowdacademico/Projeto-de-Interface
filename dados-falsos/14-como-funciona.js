@@ -29,6 +29,11 @@ export const PASSOS_INSTITUICAO = [
   { titulo: 'Repasse direto', texto: 'O valor líquido é repassado automaticamente ao pesquisador pelo intermediador de pagamento. A plataforma não intermedia contratos institucionais.' },
 ];
 
+export const CONTRIBUICOES_EXEMPLO = [
+  { date: '12/06/2026', project: 'Microplásticos no Rio Paraná', value: 'R$ 150,00', payment: 'PIX', status: 'Confirmado', statusTone: 'sucesso' },
+  { date: '05/06/2026', project: 'IA Híbrida para STI', value: 'R$ 80,00', payment: 'Cartão', status: 'Processando', statusTone: 'aviso' }
+];
+
 export const PERGUNTAS_FREQUENTES = [
   { categoria: 'Apoiar', pergunta: 'Existe valor mínimo de contribuição?', resposta: 'Sim, R$ 5,00 por contribuição, em qualquer modelo de financiamento.' },
   { categoria: 'Apoiar', pergunta: 'Preciso me cadastrar para apoiar um projeto?', resposta: 'Não, apoiadores anônimos podem contribuir via PIX sem cadastro. Cartão de crédito, débito e boleto exigem conta cadastrada.' },
@@ -41,9 +46,3 @@ export const PERGUNTAS_FREQUENTES = [
   { categoria: 'Geral', pergunta: 'Meus dados de pagamento ficam salvos na plataforma?', resposta: 'Não, o processamento de pagamento é feito por um intermediador externo; a plataforma nunca armazena dados de cartão.' },
   { categoria: 'Geral', pergunta: 'Como faço uma denúncia sobre um projeto?', resposta: 'Todo projeto tem um botão "Relatar um problema" na página de detalhe, que abre uma análise da moderação.' },
 ];
-
-export const APROVACOES_PENDENTES_FALSAS = [
-  { submissao: 'Hoje, 14:30', projeto: 'Testes de VRM em Placas B450', pesquisador: 'Lucas Novais (IFSP)', modelo: 'Tudo ou Nada', classeModelo: 'fundo-aviso texto-aviso', valor: 'R$ 15.000' },
-  { submissao: 'Ontem, 09:15', projeto: 'Sensor de Qualidade da Água em Rios Urbanos', pesquisador: 'Dra. Camila Rodrigues (Unicamp)', modelo: 'Flexível', classeModelo: 'fundo-info texto-info', valor: 'R$ 22.500' },
-];
-

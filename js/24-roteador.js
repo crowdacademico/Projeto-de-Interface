@@ -14,8 +14,6 @@ import { renderizarTelaAtualizacoes } from './36-atualizacoes.js';
 import { renderizarTelaTermos } from './38-termos.js';
 import { renderizarTelaNotificacoes } from './40-notificacoes.js';
 import { renderizarTelaMinhaConta } from './10-minha-conta.js';
-import { renderDonorDashboard } from './22-dash-doador.js';
-import { renderResearcherDashboard } from './23-dash-pesquisador.js';
 import { renderCreateFormContent } from './21-criar-campanha.js';
 import { atualizarBotoesEscalaFonte } from './26-escala-fonte.js';
 import { renderNavFlutuante } from './43-nav-flutuante.js';
@@ -50,8 +48,6 @@ const FRAGMENTOS = {
   'view-checkout': 'telas/3-checkout.html',
   'view-apoio-confirmado': 'telas/18-apoio-confirmado.html',
   'view-login': 'telas/4-login.html',
-  'view-dash-doador': 'telas/5-dash-doador.html',
-  'view-dash-pesquisador': 'telas/6-dash-pesquisador.html',
   'view-criar-campanha': 'telas/7-criar-campanha.html',
 };
 
@@ -75,8 +71,6 @@ async function inicializarApp() {
   renderProjectSupportInfo();
   renderApoiadoresRecentes();
   definirEstadoCampanha('em-captacao', { avisar: false });
-  renderDonorDashboard();
-  renderResearcherDashboard();
   renderCreateFormContent();
   setProjectTab('sobre');
 

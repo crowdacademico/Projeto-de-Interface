@@ -1,5 +1,5 @@
 import { htmlAvatar, escaparHtml } from './1-utilitarios.js';
-import { usuarioAtual, temPapel } from './4-autenticacao-falsa.js';
+import { usuarioAtual } from './4-autenticacao-falsa.js';
 import { atualizarIconeTema } from './3-tema.js';
 
 export function atualizarCabecalhoConta() {
@@ -26,24 +26,11 @@ function renderMenuConta() {
 }
 
 function htmlDropdownLogado(usuario) {
-  const ehPesquisador = temPapel('pesquisador');
   return `
         <div class="px-4 py-3 border-b borda-padrao fundo-sutil">
             <p class="text-sm font-bold texto-forte truncate">${escaparHtml(usuario.nome)}</p>
             <p class="text-xs texto-fraco truncate">${escaparHtml(usuario.email)}</p>
         </div>
-        <button type="button" onclick="fecharMenuConta(); nav('dash-doador');" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold texto-padrao hover-fundo-sutil transition-colors text-left">
-            <i class="fa-solid fa-heart w-4"></i> Seus Apoios
-        </button>
-        ${ehPesquisador ? `
-            <button type="button" onclick="fecharMenuConta(); nav('dash-pesquisador');" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold texto-padrao hover-fundo-sutil transition-colors text-left">
-                <i class="fa-solid fa-graduation-cap w-4"></i> Seu Estúdio
-            </button>
-        ` : `
-            <button type="button" onclick="fecharMenuConta(); mostrarAcao('Complete seu cadastro de Pesquisador pra acessar o Estúdio (peça o upgrade em Seus Apoios).');" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold texto-fraco hover-fundo-sutil transition-colors text-left">
-                <i class="fa-solid fa-lock w-4"></i> Seu Estúdio
-            </button>
-        `}
         <div class="border-t borda-padrao"></div>
         <button type="button" onclick="fecharMenuConta(); nav('minha-conta');" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold texto-padrao hover-fundo-sutil transition-colors text-left">
             <i class="fa-solid fa-user w-4"></i> Minha Conta
