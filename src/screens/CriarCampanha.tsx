@@ -21,6 +21,7 @@ const conteudo = String.raw`    <div class="max-w-4xl mx-auto px-4">
                     </div>
                     <div id="criar-campanha-campo-modelo"></div>
                     <div id="criar-campanha-campo-descricao"></div>
+                    <div id="criar-campanha-contador-descricao" aria-live="polite"></div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div id="criar-campanha-campo-inicio"></div>
                         <div id="criar-campanha-campo-fim"></div>

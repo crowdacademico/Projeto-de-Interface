@@ -2,7 +2,9 @@ import { createElement, Fragment } from 'react';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import { Campo } from '@restrita/components/input/campo';
+import { ContadorCaracteres } from '@restrita/components/input/contador-caracteres';
 import { CaixaAviso } from '../src/components/crud/caixa-aviso';
+import { CampoMetaCampanha } from '../src/components/input/campo-meta-campanha';
 import { RodapeAcoes } from '../src/components/crud/rodape-acoes';
 import { escaparHtml, mostrarAcao } from './1-utilitarios.js';
 import { renderizarCardsProjeto } from './18-home.js';
@@ -19,6 +21,18 @@ const raizesReact = new WeakMap();
 let passoAtual = 1;
 let rubricas = [{ categoria: '', valor: '' }];
 let marcos = [{ titulo: '', dataPrevista: '' }, { titulo: '', dataPrevista: '' }, { titulo: '', dataPrevista: '' }];
+let valorMetaAtual = '';
+
+function normalizarValorMeta(valor) {
+  if (valor === null || valor === undefined || valor === '') return '';
+  const texto = String(valor).trim();
+  if (texto.includes(',') || texto.includes('R$')) {
+    const digitos = texto.replace(/\D/g, '');
+    return digitos ? (Number(digitos) / 100).toFixed(2) : '';
+  }
+  const numero = Number(texto);
+  return Number.isFinite(numero) ? numero.toFixed(2) : '';
+}
 
 function renderizarComponente(container, componente) {
   let raiz = raizesReact.get(container);
@@ -62,7 +76,7 @@ function renderizarCampo(configuracao) {
   }));
 }
 
-function renderizarCamposDados() {
+function renderizarCamposDados(valorMetaInicial = '') {
   const hoje = new Date();
   const hojeISO = new Date(hoje.getTime() - hoje.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
   renderizarCampo({
@@ -81,16 +95,22 @@ function renderizarCamposDados() {
     obrigatorio: true,
     opcoes: [{ value: '', label: 'Selecione...' }, ...createAreaOptions],
   });
-  renderizarCampo({
-    container: 'criar-campanha-campo-meta',
-    rotulo: 'Meta (R$)',
-    nome: 'meta',
-    tipo: 'number',
-    min: 500,
-    step: '0.01',
-    obrigatorio: true,
-    dica: 'Meta mínima: R$ 500,00.',
-  });
+  const campoMeta = document.getElementById('criar-campanha-campo-meta');
+  if (!campoMeta) throw new Error('Contêiner da meta da campanha não encontrado.');
+  renderizarComponente(campoMeta, createElement(CampoMetaCampanha, {
+    valorInicial: valorMetaInicial,
+    aoMudarMeta: (valor) => {
+      valorMetaAtual = valor;
+      const meta = Number(valor) || 0;
+      elementos().meta?.setCustomValidity(meta < 500 ? 'A meta mínima é R$ 500,00.' : '');
+      atualizarSomaRubricas();
+      if (passoAtual === 4) {
+        renderPreview();
+        renderChecklist();
+      }
+      salvarRascunho();
+    },
+  }));
   renderizarCampo({
     container: 'criar-campanha-campo-modelo',
     rotulo: 'Modelo de financiamento',
@@ -108,6 +128,7 @@ function renderizarCamposDados() {
     rows: 4,
     placeholder: 'Descreva o projeto, seus objetivos e impacto científico.',
   });
+  atualizarContadorDescricao();
   renderizarCampo({
     container: 'criar-campanha-campo-inicio',
     rotulo: 'Início',
@@ -204,6 +225,13 @@ function elementos() {
   };
 }
 
+function atualizarContadorDescricao() {
+  const container = document.getElementById('criar-campanha-contador-descricao');
+  if (!container) return;
+  const texto = elementos().descricao?.value || '';
+  renderizarComponente(container, createElement(ContadorCaracteres, { texto, limite: 5000 }));
+}
+
 function modeloSelecionado() {
   return elementos().modelo?.value || createModelOptions[0].value;
 }
@@ -214,7 +242,7 @@ function salvarRascunho() {
     titulo: el.titulo?.value || '',
     area: el.area?.value || '',
     modelo: modeloSelecionado(),
-    meta: el.meta?.value || '',
+    meta: valorMetaAtual,
     descricao: el.descricao?.value || '',
     dataInicio: el.dataInicio?.value || '',
     dataFim: el.dataFim?.value || '',
@@ -369,7 +397,10 @@ function atualizarLimitesCronograma() {
 
 function validarDadosCampanha() {
   const el = elementos();
+  window.dispatchEvent(new Event('criar-campanha:validar-meta'));
   if (!el.dataInicio || !el.dataFim) return false;
+  const meta = Number(valorMetaAtual) || 0;
+  el.meta?.setCustomValidity(meta < 500 ? 'A meta mínima é R$ 500,00.' : '');
 
   const hoje = new Date();
   hoje.setHours(0, 0, 0, 0);
@@ -408,7 +439,7 @@ function atualizarSomaRubricas() {
   const container = document.getElementById('criar-campanha-rubricas-soma');
   if (!container) return;
   const soma = rubricas.reduce((total, r) => total + (Number(r.valor) || 0), 0);
-  const meta = Number(elementos().meta?.value) || 0;
+  const meta = Number(valorMetaAtual) || 0;
   const diferenca = meta - soma;
 
   let classe = 'fundo-destaque texto-padrao';
@@ -434,7 +465,7 @@ function renderPreview() {
   if (!container) return;
   const el = elementos();
   const areaRotulo = createAreaOptions.find((a) => a.value === el.area?.value)?.label || 'Área não selecionada';
-  const meta = Number(el.meta?.value) || 1;
+  const meta = Number(valorMetaAtual) || 1;
   const modelo = modeloSelecionado() === 'flexivel' ? 'flexivel' : 'tudo-ou-nada';
   const dias = el.dataInicio?.value && el.dataFim?.value
     ? Math.round((new Date(`${el.dataFim.value}T12:00:00`).getTime() - new Date(`${el.dataInicio.value}T12:00:00`).getTime()) / 86400000)
@@ -468,7 +499,7 @@ function renderChecklist() {
   if (!container) return;
   const el = elementos();
   const soma = rubricas.reduce((total, r) => total + (Number(r.valor) || 0), 0);
-  const meta = Number(el.meta?.value) || 0;
+  const meta = Number(valorMetaAtual) || 0;
   const hoje = new Date();
   hoje.setHours(0, 0, 0, 0);
   const dataInicio = el.dataInicio?.value ? new Date(`${el.dataInicio.value}T00:00:00`) : null;
@@ -503,7 +534,6 @@ function aplicarRascunho(rascunho) {
   if (el.titulo) el.titulo.value = rascunho.titulo || '';
   if (el.area) el.area.value = rascunho.area || '';
   if (el.modelo) el.modelo.value = rascunho.modelo === 'flex' ? 'flexivel' : rascunho.modelo || createModelOptions[0].value;
-  if (el.meta) el.meta.value = rascunho.meta || '';
   if (el.descricao) el.descricao.value = rascunho.descricao || '';
   if (el.dataInicio) el.dataInicio.value = rascunho.dataInicio || '';
   if (el.dataFim) el.dataFim.value = rascunho.dataFim || '';
@@ -531,7 +561,10 @@ function descartarRascunho() {
   passoAtual = 1;
   rubricas = [{ categoria: '', valor: '' }];
   marcos = [{ titulo: '', dataPrevista: '' }, { titulo: '', dataPrevista: '' }, { titulo: '', dataPrevista: '' }];
+  valorMetaAtual = '';
+  window.dispatchEvent(new CustomEvent('criar-campanha:atualizar-meta', { detail: '' }));
   document.getElementById('form-criar-campanha')?.reset();
+  atualizarContadorDescricao();
   renderRubricas();
   atualizarLimitesCronograma();
   atualizarSomaRubricas();
@@ -542,16 +575,18 @@ function descartarRascunho() {
 export function renderCreateFormContent() {
   const container = document.getElementById('criar-campanha-campo-titulo');
   if (!container) return;
+  const rascunho = carregarRascunho();
+  valorMetaAtual = normalizarValorMeta(rascunho?.meta);
   renderizarEstruturaFormulario();
-  renderizarCamposDados();
+  renderizarCamposDados(valorMetaAtual);
   renderRubricas();
   atualizarLimitesCronograma();
   atualizarSomaRubricas();
   renderPassosNav();
 
-  const rascunho = carregarRascunho();
   if (rascunho) {
     aplicarRascunho(rascunho);
+    atualizarContadorDescricao();
     renderRubricas();
     renderMarcos();
     atualizarSomaRubricas();
@@ -565,14 +600,13 @@ export function renderCreateFormContent() {
     el.titulo,
     el.area,
     el.modelo,
-    el.meta,
     el.descricao,
     el.dataInicio,
     el.dataFim,
     el.videoApresentacaoUrl,
   ].forEach((campo) => {
     campo?.addEventListener('input', () => {
-      if (campo === el.meta) atualizarSomaRubricas();
+      if (campo === el.descricao) atualizarContadorDescricao();
       if (campo === el.dataInicio || campo === el.dataFim) atualizarLimitesCronograma();
       salvarRascunho();
     });

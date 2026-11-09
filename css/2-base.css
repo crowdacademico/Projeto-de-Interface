@@ -100,6 +100,9 @@ textarea {
   display: block;
   opacity: 1;
 }
+.view-section:not(#view-home) {
+  background-color: var(--cor-fundo-pagina);
+}
 .app-shell {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
