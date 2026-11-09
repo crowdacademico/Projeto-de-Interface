@@ -1,5 +1,6 @@
-import { escaparHtml, htmlEstadoVazio, htmlMigalhas } from './1-utilitarios.js';
+import { escaparHtml, renderizarCabecalhoPagina } from './1-utilitarios.js';
 import { NOTIFICACOES_FALSAS } from '../dados-falsos/23-notificacoes.js';
+import { renderizarEstadoVazio } from '../src/renderizadores/estado-vazio';
 
 function atualizarBadgeCabecalho() {
   const badge = document.getElementById('badge-notificacoes');
@@ -19,13 +20,17 @@ export function renderizarTelaNotificacoes() {
     atualizarBadgeCabecalho();
     return;
   }
-  document.getElementById('migalhas-notificacoes').innerHTML = htmlMigalhas([{ rotulo: 'Notificações' }]);
+  renderizarCabecalhoPagina('cabecalho-pagina-notificacoes', {
+    migalhas: [{ rotulo: 'Notificações' }],
+    titulo: 'Notificações',
+    descricao: 'Avisos sobre suas campanhas e apoios.',
+  });
 
   if (NOTIFICACOES_FALSAS.length === 0) {
-    container.innerHTML = htmlEstadoVazio({
+    renderizarEstadoVazio(container, {
       icone: 'fa-bell-slash',
       titulo: 'Nenhuma notificação por aqui.',
-      mensagem: 'Avisos sobre suas campanhas e apoios aparecem nesta lista.',
+      texto: 'Avisos sobre suas campanhas e apoios aparecem nesta lista.',
     });
     atualizarBadgeCabecalho();
     return;

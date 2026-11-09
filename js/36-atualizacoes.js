@@ -1,4 +1,4 @@
-import { escaparHtml, htmlEscalaProgresso, htmlMigalhas } from './1-utilitarios.js';
+import { escaparHtml, htmlEscalaProgresso, renderizarCabecalhoPagina } from './1-utilitarios.js';
 import { CAMPANHA_ATUALIZACOES, POSTS_ATUALIZACOES } from '../dados-falsos/20-atualizacoes.js';
 
 const ABAS_FILTRO = [
@@ -57,10 +57,14 @@ export function mudarFiltroAtualizacoes(chave) {
 export function renderizarTelaAtualizacoes() {
   const cabecalho = document.getElementById('atualizacoes-cabecalho-progresso');
   if (!cabecalho) return;
-  document.getElementById('migalhas-atualizacoes').innerHTML = htmlMigalhas([
-    { rotulo: CAMPANHA_ATUALIZACOES.projeto, rota: 'campanha' },
-    { rotulo: 'Atualizações' },
-  ]);
+  renderizarCabecalhoPagina('cabecalho-pagina-atualizacoes', {
+    migalhas: [
+      { rotulo: CAMPANHA_ATUALIZACOES.projeto, rota: 'campanha' },
+      { rotulo: 'Atualizações' },
+    ],
+    titulo: 'Atualizações da campanha',
+    descricao: 'Acompanhe o andamento, os marcos e os resultados deste projeto.',
+  });
 
   cabecalho.innerHTML = `
     <p class="font-bold texto-forte mb-3">${escaparHtml(CAMPANHA_ATUALIZACOES.projeto)}</p>

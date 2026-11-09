@@ -1,31 +1,17 @@
 # Projeto de Interface - CrowdAcadêmico
 
-Protótipo visual **sem Node** - HTML/CSS/JS puros, sem `npm install`, sem
-build step. Existe pra rodar em qualquer lugar rapidinho (mostrar pra
-alguém, testar num PC qualquer) e pra sempre poder mostrar visualmente
-onde o produto real (pasta `nest/` + `react/`, na raiz do repositório)
-está indo, mesmo nas partes que ainda não foram construídas de verdade.
-
-Tudo separado por TIPO de arquivo (`css/`, `js/`, `telas/`, `componentes/`, `dados-falsos/`), numerado. A numeração tem buracos (a área restrita saiu em 05-10-2026); arquivo novo pega o próximo número livre.
-
-`css/0-style.css` e `js/0-script.js` são os dois ÚNICOS arquivos que
-`index.html` referencia (`<link>`/`<script type="module">`) - o resto
-entra via `@import` (CSS) ou `import`/`export` de módulo ES nativo do
-navegador (JS, sem bundler). Ver os comentários no topo de cada um deles
-pra entender por quê.
+Aplicação pública em migração para **React + TypeScript + Vite**. Este projeto continua separado da aplicação restrita e não inclui o NestJS. As telas estão em `src/screens/`; os componentes compartilhados ficam em `src/components/`, organizados por papel. A lógica existente em `js/` e os dados em `dados-falsos/` são mantidos durante a conversão para preservar as interações.
 
 ## Como rodar
 
-Este protótipo carrega os fragmentos HTML via `fetch()` - **não dá pra
-abrir `index.html` direto clicando duas vezes** (o navegador bloqueia
-`fetch` em `file://`). Precisa de um servidor estático qualquer, por
-exemplo:
+Instale as dependências e inicie o servidor Vite:
 
-```
-python -m http.server 8080
+```sh
+npm install
+npm run dev
 ```
 
-E abrir `http://localhost:8080/`.
+Para validar a compilação de produção, rode `npm run build`.
 
 ### Funciona sem internet
 
@@ -44,9 +30,9 @@ navegando as 20 telas com toda requisição de rede que não seja
 **Verificar que não voltou hardcoded/dependência externa:**
 ```
 grep -rn "text-\[10px\]\|text-\[11px\]\|bg-white\|text-slate-\|bg-slate-\|border-slate-\|indigo-" \
-  telas/ componentes/ js/ dados-falsos/ | grep -v "2-compat-legado.js"
+  src/ js/ dados-falsos/ | grep -v "2-compat-legado.js"
 grep -rn "images.unsplash.com\|cdn.tailwindcss.com\|fonts.googleapis.com\|cdnjs.cloudflare.com\|qrserver.com" \
-  telas/ componentes/ js/ dados-falsos/ index.html
+  src/ js/ dados-falsos/ index.html
 ```
 Ambos devem voltar vazios (o segundo, exceto o comentário de atualização
 em `index.html`).
@@ -59,16 +45,32 @@ Não existe backend nem senha de verdade. O botão **Telas do protótipo** (cant
 
 Área restrita (Painel Admin, cadastros, moderação). Ela existe só no sistema real (`react/`); aqui seria código parado.
 
-## Estrutura
+## Estrutura atual
 
 ```
-css/            0-style.css é o ponto de entrada (@import do resto)
-js/             0-script.js é o ponto de entrada (import do resto + a ponte com window que os onclick="" precisam)
-telas/          1 fragmento HTML por tela, carregado via fetch()
-componentes/    cabeçalho, rodapé e o painel "Telas do protótipo"
-dados-falsos/   todo dado mockado
+src/
+  components/    Componentes compartilhados em crud/, input/, layout/,
+                 pagination/, search/ e auth/
+  data/          Dados de domínio usados por componentes
+  renderizadores/ Adaptadores React para as telas e scripts legados
+  screens/       Telas TSX
+  types/         Tipos compartilhados
+css/             0-style.css importa a folha de estilos do protótipo
+js/              Lógica JavaScript existente, temporariamente usada pelas telas TSX
+dados-falsos/    Dados de demonstração
+imagens/         Imagens locais
 ```
+
+A migração está em andamento: telas e componentes são montados por React em `.tsx`. Componentes reutilizáveis mantêm os contratos de DOM necessários aos scripts existentes, enquanto os renderizadores conectam os fluxos legados aos componentes. A aplicação restrita não é alterada.
+
+O alias Vite `@restrita` aponta para `../crowdacademico/react/src` e permite reutilizar componentes compartilhados, como `components/input/campo.tsx`. Para desenvolver com esse alias, mantenha os repositórios `Projeto-de-Interface` e `crowdacademico` lado a lado dentro da mesma pasta.
+
+O formulário público de criação de campanha espelha os campos e etapas do CrowdAcadêmico: dados (título, área, meta, modelo, descrição, datas e vídeo), orçamento, cronograma e revisão. O formulário continua demonstrativo e sem integração com a API restrita.
+
+## Guia de estilos
+
+A tela **Guia de estilos** reúne exemplos interativos dos componentes compartilhados. Acesse pelo botão **Telas do protótipo**, no canto inferior direito, e selecione **Guia de estilos**.
 
 ## Para gastar menos token
 
-O código não tem comentários de propósito (só 2, que evitam erros que já aconteceram): leia o código. A história das decisões fica fora daqui.
+Os componentes compartilhados começam com um comentário curto sobre seu propósito; detalhes de implementação devem ser lidos no código.

@@ -1,23 +1,31 @@
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+import { flushSync } from 'react-dom';
 import { PROJETOS_FALSOS } from '../dados-falsos/13-projetos.js';
-import { htmlCardProjeto } from './18-home.js';
-import { htmlEstadoVazio, filtrarEOrdenarProjetos } from './1-utilitarios.js';
+import { renderizarCardsProjeto } from './18-home.js';
+import { filtrarEOrdenarProjetos, renderizarCabecalhoPagina } from './1-utilitarios.js';
 import { nav } from './24-roteador.js';
+import { renderizarFiltrosConhecimento } from '../src/renderizadores/explorar-filtros';
+import { renderizarEstadoVazio } from '../src/renderizadores/estado-vazio';
+import { MaisResultados } from '../src/components/pagination/mais-resultados';
+import { BarraBusca } from '../src/components/search/barra-busca';
+import {
+  CODIGOS_GRANDES_POR_AREA_LEGADA,
+  obterSubareas,
+  ROTULOS_AREA_POR_CODIGO,
+} from '../src/data/areas-conhecimento';
 
 const ITENS_POR_PAGINA = 9;
+const raizesReact = new WeakMap();
 
-const ROTULOS_AREA = {
-  biologicas: 'Ciências Biológicas',
-  exatas: 'Exatas e Engenharias',
-  saude: 'Ciências da Saúde',
-  humanas: 'Ciências Humanas',
-};
 const ROTULOS_STATUS = { 'em-captacao': 'Em captação', 'em-breve': 'Em breve', financiada: 'Financiados' };
 const ROTULOS_MODELO = { 'tudo-ou-nada': 'Tudo ou Nada', flexivel: 'Flexível' };
 
 const estado = {
   busca: '',
   status: 'todos',
-  areas: new Set(),
+  grandesAreas: new Set(),
+  subareas: new Set(),
   modelo: 'todos',
   ordenacao: 'recentes',
   visiveis: ITENS_POR_PAGINA,
@@ -31,9 +39,32 @@ function contarFiltrosAtivos() {
   let n = 0;
   if (estado.busca.trim()) n += 1;
   if (estado.status !== 'todos') n += 1;
-  n += estado.areas.size;
+  n += estado.grandesAreas.size + estado.subareas.size;
   if (estado.modelo !== 'todos') n += 1;
   return n;
+}
+
+function atualizarGrandesAreas(values) {
+  estado.grandesAreas = new Set(values);
+  const subareasDisponiveis = new Set(obterSubareas(values).map((subarea) => subarea.value));
+  estado.subareas = new Set([...estado.subareas].filter((subarea) => subareasDisponiveis.has(subarea)));
+  estado.visiveis = ITENS_POR_PAGINA;
+  renderizarResultados();
+}
+
+function atualizarSubareas(values) {
+  estado.subareas = new Set(values);
+  estado.visiveis = ITENS_POR_PAGINA;
+  renderizarResultados();
+}
+
+function renderizarFiltrosAreasConhecimento() {
+  renderizarFiltrosConhecimento(document.getElementById('explorar-filtros-conhecimento'), {
+    grandesAreasSelecionadas: [...estado.grandesAreas],
+    subareasSelecionadas: [...estado.subareas],
+    aoAlterarGrandesAreas: atualizarGrandesAreas,
+    aoAlterarSubareas: atualizarSubareas,
+  });
 }
 
 function renderizarFichasFiltros() {
@@ -50,11 +81,14 @@ function renderizarFichasFiltros() {
       document.querySelector('input[name="explorar-status"][value="todos"]').checked = true;
     } });
   }
-  estado.areas.forEach((area) => {
-    fichas.push({ rotulo: ROTULOS_AREA[area], limpar: () => {
-      estado.areas.delete(area);
-      const campo = document.querySelector(`.explorar-checkbox-area[value="${area}"]`);
-      if (campo) campo.checked = false;
+  estado.grandesAreas.forEach((area) => {
+    fichas.push({ rotulo: ROTULOS_AREA_POR_CODIGO.get(area), limpar: () => {
+      atualizarGrandesAreas([...estado.grandesAreas].filter((selecionada) => selecionada !== area));
+    } });
+  });
+  estado.subareas.forEach((subarea) => {
+    fichas.push({ rotulo: ROTULOS_AREA_POR_CODIGO.get(subarea), limpar: () => {
+      atualizarSubareas([...estado.subareas].filter((selecionada) => selecionada !== subarea));
     } });
   });
   if (estado.modelo !== 'todos') {
@@ -86,6 +120,7 @@ function renderizarResultados() {
   const paginacao = document.getElementById('explorar-paginacao');
   if (!grade) return;
 
+  renderizarFiltrosAreasConhecimento();
   const filtrados = projetosFiltrados();
   const totalAtivos = contarFiltrosAtivos();
   contagem.textContent = totalAtivos > 0
@@ -95,43 +130,61 @@ function renderizarResultados() {
   renderizarFichasFiltros();
 
   if (filtrados.length === 0) {
-    grade.innerHTML = '';
-    paginacao.innerHTML = '';
+    renderizarCardsProjeto(grade, []);
+    renderizarReact(paginacao, null);
     vazio.classList.remove('hidden');
-    vazio.innerHTML = htmlEstadoVazio({
+    renderizarEstadoVazio(vazio, {
       icone: 'fa-magnifying-glass',
       titulo: 'Nenhum projeto com esses filtros.',
-      mensagem: 'Tente ampliar a área ou o status.',
-      acaoHtml: '<button type="button" id="explorar-vazio-limpar" class="btn btn-primary">Limpar filtros</button>',
+      texto: 'Tente ampliar a área ou o status.',
+      acao: createElement('button', {
+        type: 'button',
+        id: 'explorar-vazio-limpar',
+        className: 'btn btn-primary',
+        onClick: limparTodosFiltros,
+        children: 'Limpar filtros',
+      }),
     });
-    document.getElementById('explorar-vazio-limpar').addEventListener('click', limparTodosFiltros);
     return;
   }
 
   vazio.classList.add('hidden');
   const visiveis = filtrados.slice(0, estado.visiveis);
-  grade.innerHTML = visiveis.map(htmlCardProjeto).join('');
+  renderizarCardsProjeto(grade, visiveis);
 
   if (filtrados.length > estado.visiveis) {
-    paginacao.innerHTML = `
-      <p class="texto-fraco text-sm mb-3">Mostrando ${visiveis.length} de ${filtrados.length}</p>
-      <button type="button" id="explorar-mostrar-mais" class="btn btn-secondary">Mostrar mais</button>
-    `;
-    document.getElementById('explorar-mostrar-mais').addEventListener('click', () => {
+    renderizarReact(paginacao, createElement(MaisResultados, {
+      mostrando: visiveis.length,
+      total: filtrados.length,
+      idBotao: 'explorar-mostrar-mais',
+      aoClicar: () => {
       estado.visiveis += ITENS_POR_PAGINA;
       renderizarResultados();
-    });
+      },
+    }));
   } else {
-    paginacao.innerHTML = '';
+    renderizarReact(paginacao, null);
   }
 }
 
+function obterRaizReact(container) {
+  let raiz = raizesReact.get(container);
+  if (!raiz) {
+    raiz = createRoot(container);
+    raizesReact.set(container, raiz);
+  }
+  return raiz;
+}
+
+function renderizarReact(container, elemento) {
+  const raiz = obterRaizReact(container);
+  flushSync(() => raiz.render(elemento));
+}
+
 export function definirFiltroAreaExplorar(area) {
-  estado.areas = new Set([area]);
+  estado.grandesAreas = new Set(CODIGOS_GRANDES_POR_AREA_LEGADA[area] ?? []);
+  estado.subareas.clear();
   estado.visiveis = ITENS_POR_PAGINA;
-  document.querySelectorAll('.explorar-checkbox-area').forEach((campo) => {
-    campo.checked = campo.value === area;
-  });
   renderizarResultados();
 }
 
@@ -143,13 +196,13 @@ export function navegarExplorarPorArea(area) {
 function limparTodosFiltros() {
   estado.busca = '';
   estado.status = 'todos';
-  estado.areas.clear();
+  estado.grandesAreas.clear();
+  estado.subareas.clear();
   estado.modelo = 'todos';
   estado.visiveis = ITENS_POR_PAGINA;
   document.getElementById('explorar-busca').value = '';
   document.querySelector('input[name="explorar-status"][value="todos"]').checked = true;
   document.querySelector('input[name="explorar-modelo"][value="todos"]').checked = true;
-  document.querySelectorAll('.explorar-checkbox-area').forEach((c) => { c.checked = false; });
   renderizarResultados();
 }
 
@@ -160,6 +213,19 @@ export function renderizarTelaExplorar() {
     return;
   }
   container.dataset.inicializado = 'true';
+  const busca = document.getElementById('explorar-barra-busca');
+  if (!busca) throw new Error('Contêiner da busca em Explorar não encontrado.');
+  renderizarReact(busca, createElement(BarraBusca, {
+    id: 'explorar-busca',
+    rotulo: 'Buscar por título, pesquisador ou instituição',
+    placeholder: 'Buscar por título, pesquisador ou instituição...',
+    className: 'w-full',
+  }));
+  renderizarCabecalhoPagina('cabecalho-pagina-explorar', {
+    migalhas: [{ rotulo: 'Explorar' }],
+    titulo: 'Explorar projetos',
+    descricao: 'Encontre projetos de pesquisa e acompanhe campanhas de diferentes áreas do conhecimento.',
+  });
 
   document.getElementById('explorar-busca').addEventListener('input', (evento) => {
     estado.busca = evento.target.value;
@@ -170,15 +236,6 @@ export function renderizarTelaExplorar() {
   document.querySelectorAll('input[name="explorar-status"]').forEach((campo) => {
     campo.addEventListener('change', () => {
       estado.status = campo.value;
-      estado.visiveis = ITENS_POR_PAGINA;
-      renderizarResultados();
-    });
-  });
-
-  document.querySelectorAll('.explorar-checkbox-area').forEach((campo) => {
-    campo.addEventListener('change', () => {
-      if (campo.checked) estado.areas.add(campo.value);
-      else estado.areas.delete(campo.value);
       estado.visiveis = ITENS_POR_PAGINA;
       renderizarResultados();
     });

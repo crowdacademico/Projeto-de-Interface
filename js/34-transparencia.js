@@ -1,4 +1,9 @@
-import { escaparHtml, htmlMigalhas } from './1-utilitarios.js';
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+import { flushSync } from 'react-dom';
+import { Campo } from '@restrita/components/input/campo';
+import { TabelaGenerica } from '../src/components/crud/tabela-generica';
+import { escaparHtml, renderizarCabecalhoPagina } from './1-utilitarios.js';
 import {
   COMPOSICAO_TAXA,
   TABELA_MEIOS_PAGAMENTO,
@@ -7,12 +12,23 @@ import {
   TAXA_REPASSE_PADRAO_PERCENTUAL,
 } from '../dados-falsos/18-transparencia.js';
 
+const raizesReact = new WeakMap();
+
+function renderizarComponente(container, componente) {
+  let raiz = raizesReact.get(container);
+  if (!raiz) {
+    raiz = createRoot(container);
+    raizesReact.set(container, raiz);
+  }
+  flushSync(() => raiz.render(componente));
+}
+
 function formatarReais(valor) {
   return `R$ ${valor.toFixed(2).replace('.', ',')}`;
 }
 
 function atualizarSimulador() {
-  const input = document.getElementById('transparencia-simulador-valor');
+  const input = document.querySelector('#view-transparencia [name="valor-apoio"]');
   const resultado = document.getElementById('transparencia-simulador-resultado');
   const decomposicao = document.getElementById('transparencia-simulador-decomposicao');
   if (!input || !resultado) return;
@@ -34,7 +50,11 @@ function atualizarSimulador() {
 export function renderizarTelaTransparencia() {
   const barra = document.getElementById('transparencia-barra-composicao');
   if (!barra) return;
-  document.getElementById('migalhas-transparencia').innerHTML = htmlMigalhas([{ rotulo: 'Transparência e taxas' }]);
+  renderizarCabecalhoPagina('cabecalho-pagina-transparencia', {
+    migalhas: [{ rotulo: 'Transparência e taxas' }],
+    titulo: 'Transparência e taxas',
+    descricao: 'Para onde vai cada real que passa pela plataforma.',
+  });
 
   barra.innerHTML = `
     <div class="escala-composicao__segmentos">
@@ -49,13 +69,20 @@ export function renderizarTelaTransparencia() {
     </span>
   `).join('');
 
-  document.getElementById('transparencia-tabela-meios').innerHTML = TABELA_MEIOS_PAGAMENTO.map((linha) => `
-    <tr>
-      <td class="font-bold texto-forte">${escaparHtml(linha.meio)}</td>
-      <td>${escaparHtml(linha.prazoRepasse)}</td>
-      <td>${escaparHtml(linha.taxaAdicional)}</td>
-    </tr>
-  `).join('');
+  const tabela = document.getElementById('transparencia-tabela-meios');
+  if (!tabela) throw new Error('Contêiner da tabela de prazos não encontrado.');
+  const linhas = TABELA_MEIOS_PAGAMENTO.map((linha) => createElement(
+    'tr',
+    { key: linha.meio },
+    createElement('td', { className: 'font-bold texto-forte', children: linha.meio }),
+    createElement('td', { children: linha.prazoRepasse }),
+    createElement('td', { children: linha.taxaAdicional }),
+  ));
+  renderizarComponente(tabela, createElement(TabelaGenerica, {
+    colunas: ['Meio', 'Prazo de repasse', 'Taxa adicional'],
+    legenda: 'Prazos e taxas por meio de pagamento',
+    children: linhas,
+  }));
 
   document.getElementById('transparencia-politica-estorno').textContent = POLITICA_ESTORNO;
 
@@ -66,10 +93,24 @@ export function renderizarTelaTransparencia() {
     </li>
   `).join('');
 
-  const input = document.getElementById('transparencia-simulador-valor');
-  if (input && !input.dataset.ligado) {
-    input.addEventListener('input', atualizarSimulador);
-    input.dataset.ligado = '1';
+  const campo = document.getElementById('transparencia-simulador-campo');
+  if (!campo) throw new Error('Contêiner do campo de simulação não encontrado.');
+  renderizarComponente(campo, createElement(Campo, {
+    rotulo: 'Valor do apoio (R$)',
+    children: ({ atributos, classeErro }) => createElement('input', {
+      ...atributos,
+      name: 'valor-apoio',
+      type: 'number',
+      min: 5,
+      step: 5,
+      defaultValue: 150,
+      className: `input-padrao max-w-52${classeErro}`,
+    }),
+  }));
+  const campoValor = document.querySelector('#view-transparencia [name="valor-apoio"]');
+  if (campoValor && !campoValor.dataset.ligado) {
+    campoValor.addEventListener('input', atualizarSimulador);
+    campoValor.dataset.ligado = '1';
   }
   atualizarSimulador();
 }

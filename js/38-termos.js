@@ -1,11 +1,14 @@
-import { escaparHtml, escaparAtributo, mostrarAcao, htmlMigalhas } from './1-utilitarios.js';
+import { escaparHtml, escaparAtributo, mostrarAcao, renderizarCabecalhoPagina } from './1-utilitarios.js';
 import { SECOES_TERMOS } from '../dados-falsos/21-termos.js';
 
 export function renderizarTelaTermos() {
   const indice = document.getElementById('termos-indice');
   const conteudo = document.getElementById('termos-conteudo');
   if (!indice || !conteudo) return;
-  document.getElementById('migalhas-termos').innerHTML = htmlMigalhas([{ rotulo: 'Termos e privacidade' }]);
+  renderizarCabecalhoPagina('cabecalho-pagina-termos', {
+    migalhas: [{ rotulo: 'Termos e privacidade' }],
+    titulo: 'Termos de uso e política de privacidade',
+  });
 
   indice.innerHTML = SECOES_TERMOS.map((secao) => `
     <a href="#${escaparAtributo(secao.id)}" class="text-sm texto-padrao hover:text-primary py-1.5 transition-colors">${escaparHtml(secao.titulo)}</a>

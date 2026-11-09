@@ -1,3 +1,7 @@
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+import { flushSync } from 'react-dom';
+import { IconeProvedor } from '../src/components/auth/icone-provedor';
 import { USUARIOS_FALSOS } from '../dados-falsos/1-usuarios.js';
 import { entrarComo } from './4-autenticacao-falsa.js';
 import { atualizarCabecalhoConta } from './7-cabecalho.js';
@@ -10,6 +14,10 @@ export function inicializarFormularioLogin() {
   const form = document.getElementById('form-login');
   if (!form || form.dataset.inicializado) return;
   form.dataset.inicializado = 'true';
+  const iconeProvedor = document.getElementById('icone-provedor-google');
+  if (!iconeProvedor) throw new Error('Contêiner do ícone de provedor não encontrado.');
+  const raizIcone = createRoot(iconeProvedor);
+  flushSync(() => raizIcone.render(createElement(IconeProvedor, { provedor: 'google' })));
 
   form.addEventListener('submit', (evento) => {
     evento.preventDefault();

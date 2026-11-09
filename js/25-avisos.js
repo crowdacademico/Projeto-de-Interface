@@ -1,12 +1,9 @@
-const ICONES = {
-  info: 'fa-circle-info',
-  sucesso: 'fa-circle-check',
-  aviso: 'fa-triangle-exclamation',
-  erro: 'fa-circle-xmark',
-};
-
-const DURACAO_VISIVEL_MS = 4200;
-const MAXIMO_EMPILHADO = 3;
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+import { Toast } from '../src/components/layout/toast';
+import { DURACAO_TOAST_MS, MAXIMO_TOASTS } from '../src/components/layout/toast.constants';
+let proximoAvisoId = 0;
+const avisosAtivos = new Set();
 
 function containerAvisos() {
   return document.getElementById('app-avisos');
@@ -15,40 +12,54 @@ function containerAvisos() {
 export function mostrarAviso(mensagem, tipo = 'info') {
   const container = containerAvisos();
   if (!container) {
+    throw new Error('Contêiner de avisos não encontrado.');
+  }
 
+  while (avisosAtivos.size >= MAXIMO_TOASTS) {
+    removerAviso(avisosAtivos.values().next().value, true);
+  }
+
+  const elemento = document.createElement('div');
+  container.appendChild(elemento);
+  const registro = { elemento, raiz: createRoot(elemento), removendo: false };
+  const idBotaoFechar = `aviso-fechar-${proximoAvisoId++}`;
+  registro.raiz.render(createElement(Toast, {
+    mensagem,
+    tipo,
+    idBotaoFechar,
+    aoFechar: () => removerAviso(registro),
+  }));
+  avisosAtivos.add(registro);
+  setTimeout(() => removerAviso(registro), DURACAO_TOAST_MS);
+}
+
+function removerAviso(registro, imediatamente = false) {
+  if (!registro || registro.removendo) return;
+  registro.removendo = true;
+  if (!registro.elemento.isConnected || imediatamente) {
+    registro.raiz.unmount();
+    registro.elemento.remove();
+    avisosAtivos.delete(registro);
     return;
   }
-
-  while (container.children.length >= MAXIMO_EMPILHADO) {
-    container.removeChild(container.firstElementChild);
-  }
-
-  const icone = ICONES[tipo] || ICONES.info;
-  const elemento = document.createElement('div');
-  elemento.className = `aviso aviso--${tipo}`;
-
-  const spanIcone = document.createElement('i');
-  spanIcone.className = `fa-solid ${icone} aviso__icone`;
-
-  const divTexto = document.createElement('div');
-  divTexto.className = 'aviso__texto';
-  divTexto.textContent = mensagem;
-
-  const botaoFechar = document.createElement('button');
-  botaoFechar.type = 'button';
-  botaoFechar.className = 'aviso__fechar';
-  botaoFechar.setAttribute('aria-label', 'Fechar aviso');
-  botaoFechar.textContent = '×';
-
-  elemento.append(spanIcone, divTexto, botaoFechar);
-
-  const remover = () => {
-    if (!elemento.isConnected) return;
-    elemento.classList.add('aviso--saindo');
-    elemento.addEventListener('animationend', () => elemento.remove(), { once: true });
+  const aviso = registro.elemento.querySelector('.aviso');
+  if (!aviso) throw new Error('Toast não foi montado no contêiner de avisos.');
+  const duracao = getComputedStyle(aviso).animationDuration.split(',')[0].trim();
+  const valorDuracao = Number.parseFloat(duracao);
+  const duracaoMs = duracao.endsWith('ms') ? valorDuracao : valorDuracao * 1000;
+  aviso.classList.add('aviso--saindo');
+  let finalizado = false;
+  const finalizar = () => {
+    if (finalizado) return;
+    finalizado = true;
+    registro.raiz.unmount();
+    registro.elemento.remove();
+    avisosAtivos.delete(registro);
   };
-
-  botaoFechar.addEventListener('click', remover);
-  container.appendChild(elemento);
-  setTimeout(remover, DURACAO_VISIVEL_MS);
+  if (!duracaoMs) {
+    finalizar();
+    return;
+  }
+  registro.elemento.addEventListener('animationend', finalizar, { once: true });
+  setTimeout(finalizar, duracaoMs);
 }

@@ -5,3 +5,7 @@ informacoes/
 *.log
 .DS_Store
 Thumbs.db
+
+# Build e dependências do app React
+node_modules/
+dist/

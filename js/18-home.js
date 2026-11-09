@@ -1,8 +1,10 @@
-import { escaparHtml, mostrarAcao, htmlEscalaProgresso, htmlEstadoVazio, filtrarEOrdenarProjetos, inicializarCarrossel } from './1-utilitarios.js';
+import { escaparHtml, mostrarAcao, filtrarEOrdenarProjetos, inicializarCarrossel } from './1-utilitarios.js';
 import { homeStats, HOME_CONFIANCA, HOME_PASSOS_APOIO, HOME_PERGUNTAS } from '../dados-falsos/7-home.js';
 import { nav } from './24-roteador.js';
 import { TAXA_PLATAFORMA_PERCENTUAL } from '../dados-falsos/12-config-prototipo.js';
 import { PROJETOS_FALSOS } from '../dados-falsos/13-projetos.js';
+import { renderizarCardsCampanha } from '../src/renderizadores/cartoes-campanha';
+import { renderizarEstadoVazio } from '../src/renderizadores/estado-vazio';
 
 const estadoFiltrosHome = {
     status: new Set(['em-captacao']),
@@ -40,7 +42,7 @@ function renderUltimosDias() {
     const container = document.getElementById('home-ultimos-dias');
     if (!container) return;
     const visiveis = filtrarEOrdenarProjetos(PROJETOS_FALSOS, estadoUltimosDias).slice(0, 4);
-    container.innerHTML = visiveis.map(htmlCardProjeto).join('');
+    renderizarCardsProjeto(container, visiveis);
     inicializarCarrossel({
         wrapper: document.getElementById('ultimos-dias-carrossel'),
         trilho: container,
@@ -62,7 +64,7 @@ function renderEmBreve() {
     if (!secao || !container) return;
     const visiveis = filtrarEOrdenarProjetos(PROJETOS_FALSOS, estadoEmBreve).slice(0, 4);
     secao.classList.toggle('hidden', visiveis.length === 0);
-    container.innerHTML = visiveis.map(htmlCardProjeto).join('');
+    renderizarCardsProjeto(container, visiveis);
     inicializarCarrossel({
         wrapper: document.getElementById('em-breve-carrossel'),
         trilho: container,
@@ -100,56 +102,12 @@ export function alternarSeguirProjeto(evento, id) {
     mostrarAcao(agoraSegue ? 'Você passou a seguir este projeto.' : 'Você deixou de seguir este projeto.');
 }
 
-export function htmlCardProjeto(project) {
-    const emBreve = project.status === 'em-breve';
-    const segueEsteProjeto = projetosSeguidos.has(project.id);
-    return `
-        <div onclick="nav('campanha')" class="fundo-cartao rounded-xl border borda-padrao overflow-hidden hover:shadow-2xl transition-all cursor-pointer flex flex-col group h-full hover:-translate-y-1">
-            <div class="h-24 relative overflow-hidden bg-[var(--cor-tinta-900)]">
-                <img src="${project.image}" alt="${escaparHtml(project.title)}" class="w-full h-full object-cover opacity-80 group-hover:scale-105 group-hover:saturate-125 group-hover:opacity-100 transition-all duration-700">
-                <button type="button" onclick="alternarSeguirProjeto(event, ${project.id})" aria-pressed="${segueEsteProjeto}" aria-label="${segueEsteProjeto ? 'Deixar de seguir este projeto' : 'Seguir este projeto'}" class="botao-seguir ${segueEsteProjeto ? 'botao-seguir--ativo' : ''}">
-                    <i class="${segueEsteProjeto ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
-                </button>
-                <span class="absolute top-3 right-3 badge-flutuante backdrop-blur-sm ${project.badgeClasses} microrrotulo px-3 py-1.5 rounded-full border-2">${escaparHtml(project.badge)}</span>
-                <div class="escala-bar-cientifica">${escaparHtml(project.institution)}</div>
-            </div>
-            <div class="p-4 flex-1 flex flex-col">
-                <span class="microrrotulo texto-fraco mb-1.5 block">${escaparHtml(project.institution)} · ${escaparHtml(project.uf)}</span>
-                <h3 class="subtitulo texto-forte leading-tight mb-2 line-clamp-2 group-hover:text-primary transition-colors">${escaparHtml(project.title)}</h3>
-                <p class="legenda mb-3 line-clamp-1">${escaparHtml(project.description)}</p>
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center legenda font-bold border ${project.avatarClasses}">${escaparHtml(project.avatar)}</div>
-                    <div>
-                        <div class="text-corpo-pequeno font-bold texto-padrao flex items-center gap-1">${escaparHtml(project.researcher)} <i class="fa-solid fa-circle-check text-primary text-microrrotulo"></i></div>
-                        <div class="legenda">${escaparHtml(project.category)}</div>
-                    </div>
-                </div>
-                <div class="mt-auto">
-                    ${emBreve ? `
-                        <div class="flex items-center gap-3 rounded-lg fundo-institucional-sutil texto-institucional p-3">
-                            <i class="fa-regular fa-clock text-lg shrink-0"></i>
-                            <div class="min-w-0">
-                                <span class="font-bold text-sm block">Início em ${project.diasParaInicio} dia${project.diasParaInicio === 1 ? '' : 's'}</span>
-                                <span class="paragrafo-denso">Meta: R$ ${project.meta.toLocaleString('pt-BR')}</span>
-                            </div>
-                        </div>
-                    ` : `
-                        <div class="flex justify-between items-end mb-1.5">
-                            <span class="numero numero--kpi texto-forte">${escaparHtml(project.value)}</span>
-                            <span class="paragrafo-denso texto-fraco">${escaparHtml(project.progressLabel)}</span>
-                        </div>
-                        <div class="mb-3">
-                            ${htmlEscalaProgresso({ percentual: (project.valorArrecadado / project.meta) * 100, valorAtual: project.value, valorMeta: `R$ ${project.meta.toLocaleString('pt-BR')}`, modelo: project.modelo, compacta: true })}
-                        </div>
-                        <div class="flex justify-between items-center legenda">
-                            <span class="fundo-realce px-2 py-1 rounded-md"><i class="fa-solid fa-users mr-1"></i> ${escaparHtml(project.supportLabel)}</span>
-                            <span class="fundo-realce px-2 py-1 rounded-md"><i class="fa-regular fa-clock mr-1"></i> ${escaparHtml(project.timeLabel)}</span>
-                        </div>
-                    `}
-                </div>
-            </div>
-        </div>
-    `;
+export function renderizarCardsProjeto(container, projetos, opcoes = {}) {
+    renderizarCardsCampanha(container, projetos, {
+        ...opcoes,
+        onAbrir: () => nav('campanha'),
+        onAlternarSeguir: alternarSeguirProjeto,
+    });
 }
 
 function renderFeaturedProjects() {
@@ -176,14 +134,14 @@ function renderFeaturedProjects() {
     };
 
     if (visiveis.length === 0) {
-        grade.innerHTML = '';
+        renderizarCardsProjeto(grade, []);
         if (vazio) {
             vazio.classList.remove('hidden');
 
-            vazio.innerHTML = htmlEstadoVazio({
+            renderizarEstadoVazio(vazio, {
                 icone: 'fa-flask',
                 titulo: 'Nenhum projeto em captação no momento.',
-                mensagem: 'Volte em breve ou veja o catálogo completo no Explorar.',
+                texto: 'Volte em breve ou veja o catálogo completo no Explorar.',
             });
         }
         inicializarCarrossel(carrossel);
@@ -191,7 +149,7 @@ function renderFeaturedProjects() {
     }
 
     if (vazio) vazio.classList.add('hidden');
-    grade.innerHTML = visiveis.map(htmlCardProjeto).join('');
+    renderizarCardsProjeto(grade, visiveis);
     inicializarCarrossel(carrossel);
 }
 

@@ -1,8 +1,14 @@
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+import { flushSync } from 'react-dom';
+import { SeloStatusConta } from '../src/components/crud/selo-status-conta';
 import { usuarioAtual } from './4-autenticacao-falsa.js';
 import { papeisDoUsuario } from '../dados-falsos/1-usuarios.js';
 import { htmlAvatar, escaparHtml, escaparAtributo, formatarData, formatarDataHora, mostrarAcao, htmlMigalhas } from './1-utilitarios.js';
 import { htmlSecaoFicha, htmlCampoFicha } from './6-formulario.js';
 import { atualizarCabecalhoConta } from './7-cabecalho.js';
+
+let raizSeloStatusConta;
 
 export function renderizarTelaMinhaConta() {
   const faixa = document.getElementById('faixa-identidade-minha-conta');
@@ -12,6 +18,8 @@ export function renderizarTelaMinhaConta() {
   if (migalhas) migalhas.innerHTML = htmlMigalhas([{ rotulo: 'Minha Conta' }]);
 
   const secoes = document.getElementById('secoes-minha-conta');
+  raizSeloStatusConta?.unmount();
+  raizSeloStatusConta = undefined;
   const usuario = usuarioAtual();
   if (!usuario) {
     faixa.innerHTML = '';
@@ -20,6 +28,12 @@ export function renderizarTelaMinhaConta() {
   }
 
   faixa.innerHTML = htmlFaixaIdentidade(usuario);
+  const seloStatus = document.getElementById('selo-status-conta');
+  if (!seloStatus) throw new Error('Contêiner de status da conta não encontrado.');
+  raizSeloStatusConta = createRoot(seloStatus);
+  flushSync(() => raizSeloStatusConta.render(createElement(SeloStatusConta, {
+    emailVerificado: usuario.emailVerificado,
+  })));
   secoes.innerHTML = [
     htmlSecaoPerfil(usuario),
     htmlSecaoSeguranca(usuario),
@@ -55,10 +69,7 @@ function htmlFaixaIdentidade(usuario) {
                     <h1 class="titulo-pagina texto-forte break-words">${escaparHtml(usuario.nome)}</h1>
                     <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2 text-sm texto-fraco">
                         <span class="break-words">${escaparHtml(usuario.email)}</span>
-                        <span class="badge flex items-center gap-1 ${usuario.emailVerificado ? 'badge-sucesso' : 'fundo-aviso texto-aviso'}">
-                            <i class="fa-solid text-microrrotulo ${usuario.emailVerificado ? 'fa-check' : 'fa-triangle-exclamation'}"></i>
-                            ${usuario.emailVerificado ? 'E-mail verificado' : 'E-mail não verificado'}
-                        </span>
+                        <span id="selo-status-conta"></span>
                         ${membroDesde ? `<span class="paragrafo-denso">Membro desde ${membroDesde}</span>` : ''}
                     </div>
                     ${papeis.length > 0 ? `<div class="flex flex-wrap gap-1.5 mt-3">${papeis.map((p) => `<span class="badge badge-neutro">${escaparHtml(p.nome)}</span>`).join('')}</div>` : ''}

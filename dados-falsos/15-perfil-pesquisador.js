@@ -2,7 +2,6 @@ export const PERFIL_PESQUISADOR_FALSO = {
   nome: 'Dra. Marina Souza',
   cargo: 'Professora Associada, Laboratório de Ecologia Aquática',
   instituicao: 'UNESP Ilha Solteira',
-  cidade: 'Ilha Solteira, SP',
   dataValidacao: '12/2025',
   lattes: 'http://lattes.cnpq.br/0000000000000000',
   orcid: '0000-0002-0000-0000',

@@ -1,3 +1,7 @@
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+import { flushSync } from 'react-dom';
+import { SeloStatusCampanha } from '../src/components/crud/selo-status-campanha';
 import { projectTabs, projectSupportInfo, CAMPANHA_LINHA_DO_TEMPO } from '../dados-falsos/8-campanha.js';
 import { ORCAMENTO_RUBRICAS, ORCAMENTO_TOTAL } from '../dados-falsos/28-orcamento.js';
 import { APOIADORES_RECENTES, TOTAL_APOIADORES } from '../dados-falsos/27-apoiadores.js';
@@ -6,6 +10,7 @@ import { nav } from './24-roteador.js';
 import { escaparHtml, htmlEscalaProgresso, htmlAvatar } from './1-utilitarios.js';
 
 const CORES_ORCAMENTO = ['var(--cor-cianotipo-600)', 'var(--cor-cianotipo-500)', 'var(--cor-cianotipo-400)', 'var(--cor-cianotipo-300)'];
+let raizSeloStatusCampanha;
 
 function renderOrcamentoCampanha() {
     const container = document.getElementById('orcamento-conteudo-campanha');
@@ -140,6 +145,11 @@ export function renderProjectSupportInfo() {
 }
 
 export function definirEstadoCampanha(estado, { avisar = true } = {}) {
+  const seloStatus = document.getElementById('selo-status-campanha');
+  if (!seloStatus) throw new Error('Contêiner de status da campanha não encontrado.');
+  if (!raizSeloStatusCampanha) raizSeloStatusCampanha = createRoot(seloStatus);
+  flushSync(() => raizSeloStatusCampanha.render(createElement(SeloStatusCampanha, { status: estado })));
+
   const faixa = document.getElementById('faixa-estado-campanha');
   const valor = document.getElementById('valor-arrecadado-campanha');
   const legenda = document.getElementById('legenda-meta-campanha');

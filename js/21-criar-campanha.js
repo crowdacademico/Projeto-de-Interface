@@ -1,35 +1,211 @@
+import { createElement, Fragment } from 'react';
+import { createRoot } from 'react-dom/client';
+import { flushSync } from 'react-dom';
+import { Campo } from '@restrita/components/input/campo';
+import { CaixaAviso } from '../src/components/crud/caixa-aviso';
+import { RodapeAcoes } from '../src/components/crud/rodape-acoes';
 import { escaparHtml, mostrarAcao } from './1-utilitarios.js';
-import { htmlCardProjeto } from './18-home.js';
+import { renderizarCardsProjeto } from './18-home.js';
 import { nav } from './24-roteador.js';
 import {
   createAreaOptions,
   createModelOptions,
   PASSOS_CRIAR_CAMPANHA,
-  CAPAS_CRIAR_CAMPANHA,
 } from '../dados-falsos/11-criar-campanha.js';
 
 const CHAVE_RASCUNHO = 'crowdacademico-protótipo.rascunho-campanha';
-const LIMITE_RESUMO = 280;
+const raizesReact = new WeakMap();
 
 let passoAtual = 1;
-let capaSelecionada = CAPAS_CRIAR_CAMPANHA[0].id;
+let rubricas = [{ categoria: '', valor: '' }];
+let marcos = [{ titulo: '', dataPrevista: '' }, { titulo: '', dataPrevista: '' }, { titulo: '', dataPrevista: '' }];
 
-let rubricas = [{ nome: '', valor: '' }];
+function renderizarComponente(container, componente) {
+  let raiz = raizesReact.get(container);
+  if (!raiz) {
+    raiz = createRoot(container);
+    raizesReact.set(container, raiz);
+  }
+  flushSync(() => raiz.render(componente));
+}
+
+function renderizarCampo(configuracao) {
+  const container = document.getElementById(configuracao.container);
+  if (!container) throw new Error(`Contêiner de campo não encontrado: ${configuracao.container}.`);
+
+  const tipoElemento = configuracao.elemento || 'input';
+  renderizarComponente(container, createElement(Campo, {
+    rotulo: configuracao.rotulo,
+    dica: configuracao.dica,
+    className: configuracao.className || 'campo',
+    children: ({ atributos, classeErro }) => createElement(
+      tipoElemento,
+      {
+        ...atributos,
+        name: configuracao.nome,
+        type: tipoElemento === 'input' ? configuracao.tipo || 'text' : undefined,
+        required: configuracao.obrigatorio || undefined,
+        min: configuracao.min,
+        max: configuracao.max,
+        maxLength: configuracao.maxLength,
+        step: configuracao.step,
+        placeholder: configuracao.placeholder,
+        rows: configuracao.rows,
+        className: `input-padrao${configuracao.inputClassName ? ` ${configuracao.inputClassName}` : ''}${classeErro}`,
+        children: configuracao.opcoes?.map((opcao) => createElement('option', {
+          key: opcao.value,
+          value: opcao.value,
+          children: opcao.label,
+        })),
+      },
+    ),
+  }));
+}
+
+function renderizarCamposDados() {
+  const hoje = new Date();
+  const hojeISO = new Date(hoje.getTime() - hoje.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  renderizarCampo({
+    container: 'criar-campanha-campo-titulo',
+    rotulo: 'Título',
+    nome: 'titulo',
+    obrigatorio: true,
+    placeholder: 'Título do projeto',
+    inputClassName: 'font-bold texto-forte',
+  });
+  renderizarCampo({
+    container: 'criar-campanha-campo-area',
+    rotulo: 'Área do conhecimento',
+    nome: 'area',
+    elemento: 'select',
+    obrigatorio: true,
+    opcoes: [{ value: '', label: 'Selecione...' }, ...createAreaOptions],
+  });
+  renderizarCampo({
+    container: 'criar-campanha-campo-meta',
+    rotulo: 'Meta (R$)',
+    nome: 'meta',
+    tipo: 'number',
+    min: 500,
+    step: '0.01',
+    obrigatorio: true,
+    dica: 'Meta mínima: R$ 500,00.',
+  });
+  renderizarCampo({
+    container: 'criar-campanha-campo-modelo',
+    rotulo: 'Modelo de financiamento',
+    nome: 'modelo',
+    elemento: 'select',
+    obrigatorio: true,
+    opcoes: createModelOptions,
+  });
+  renderizarCampo({
+    container: 'criar-campanha-campo-descricao',
+    rotulo: 'Descrição (opcional)',
+    nome: 'descricao',
+    elemento: 'textarea',
+    maxLength: 5000,
+    rows: 4,
+    placeholder: 'Descreva o projeto, seus objetivos e impacto científico.',
+  });
+  renderizarCampo({
+    container: 'criar-campanha-campo-inicio',
+    rotulo: 'Início',
+    nome: 'dataInicio',
+    tipo: 'date',
+    min: hojeISO,
+    obrigatorio: true,
+  });
+  renderizarCampo({
+    container: 'criar-campanha-campo-fim',
+    rotulo: 'Fim',
+    nome: 'dataFim',
+    tipo: 'date',
+    min: hojeISO,
+    obrigatorio: true,
+  });
+  renderizarCampo({
+    container: 'criar-campanha-campo-video',
+    rotulo: 'URL do vídeo de apresentação (opcional)',
+    nome: 'videoApresentacaoUrl',
+    tipo: 'url',
+    placeholder: 'https://',
+  });
+}
+
+function renderizarEstruturaFormulario() {
+  const aviso = document.getElementById('criar-campanha-aviso-curadoria');
+  const acoes = document.getElementById('criar-campanha-rodape-acoes');
+  if (!aviso || !acoes) throw new Error('Contêineres de aviso e ações da campanha não encontrados.');
+
+  renderizarComponente(aviso, createElement(CaixaAviso, {
+    titulo: createElement(Fragment, null,
+      'Análise de Curadoria ',
+      createElement('span', { className: 'rf-inline', children: '(RF-016)' }),
+    ),
+    icone: 'fa-microscope',
+    className: 'mb-10 border borda-info rounded-xl p-6 shadow-inner gap-4',
+    children: createElement('p', {
+      className: 'text-sm font-medium leading-relaxed',
+      children: 'Todo projeto submetido passa por uma rigorosa avaliação do Conselho Científico da plataforma antes de ser publicado. Certifique-se de que o escopo e o orçamento estejam perfeitamente justificados.',
+    }),
+  }));
+
+  renderizarComponente(acoes, createElement(RodapeAcoes, {
+    className: 'mt-10 border-t-2 pt-8 gap-4',
+    children: createElement(Fragment, null,
+      createElement('button', {
+        type: 'button',
+        id: 'criar-campanha-descartar',
+        className: 'px-8 py-4 rounded-xl font-bold texto-fraco hover-fundo-sutil hover-texto-forte transition-colors',
+        children: 'Descartar Rascunho',
+      }),
+      createElement('div', {
+        className: 'flex gap-3',
+        children: [
+          createElement('button', {
+            key: 'voltar',
+            type: 'button',
+            id: 'criar-campanha-voltar',
+            className: 'hidden px-8 py-4 rounded-xl font-bold texto-padrao border-2 borda-padrao hover-fundo-sutil transition-colors',
+            children: 'Voltar',
+          }),
+          createElement('button', {
+            key: 'avancar',
+            type: 'button',
+            id: 'criar-campanha-avancar',
+            className: 'bg-dark hover:bg-black text-white font-bold py-4 px-10 rounded-xl shadow-xl transition-all hover:-translate-y-0.5 flex items-center gap-2',
+            children: createElement(Fragment, null, 'Próximo ', createElement('i', { className: 'fa-solid fa-arrow-right', 'aria-hidden': 'true' })),
+          }),
+          createElement('button', {
+            key: 'submeter',
+            type: 'submit',
+            id: 'criar-campanha-submeter',
+            className: 'hidden bg-primary hover:bg-primary-dark text-white font-bold py-4 px-10 rounded-xl shadow-xl transition-all hover:-translate-y-0.5 items-center gap-2',
+            children: createElement(Fragment, null, createElement('i', { className: 'fa-solid fa-paper-plane', 'aria-hidden': 'true' }), ' Submeter Projeto'),
+          }),
+        ],
+      }),
+    ),
+  }));
+}
 
 function elementos() {
+  const formulario = document.getElementById('form-criar-campanha');
   return {
-    titulo: document.getElementById('criar-campanha-titulo'),
-    area: document.getElementById('create-area-options'),
-    resumo: document.getElementById('criar-campanha-resumo'),
-    descricao: document.getElementById('criar-campanha-descricao'),
-    meta: document.getElementById('criar-campanha-meta'),
-    prazo: document.getElementById('criar-campanha-prazo'),
+    titulo: formulario?.querySelector('[name="titulo"]'),
+    area: formulario?.querySelector('[name="area"]'),
+    modelo: formulario?.querySelector('[name="modelo"]'),
+    meta: formulario?.querySelector('[name="meta"]'),
+    descricao: formulario?.querySelector('[name="descricao"]'),
+    dataInicio: formulario?.querySelector('[name="dataInicio"]'),
+    dataFim: formulario?.querySelector('[name="dataFim"]'),
+    videoApresentacaoUrl: formulario?.querySelector('[name="videoApresentacaoUrl"]'),
   };
 }
 
 function modeloSelecionado() {
-  const marcado = document.querySelector('input[name="modelo-financiamento"]:checked');
-  return marcado ? marcado.value : createModelOptions[0].value;
+  return elementos().modelo?.value || createModelOptions[0].value;
 }
 
 function salvarRascunho() {
@@ -37,13 +213,14 @@ function salvarRascunho() {
   const rascunho = {
     titulo: el.titulo?.value || '',
     area: el.area?.value || '',
-    resumo: el.resumo?.value || '',
-    descricao: el.descricao?.value || '',
-    capa: capaSelecionada,
-    meta: el.meta?.value || '',
-    prazo: el.prazo?.value || '',
     modelo: modeloSelecionado(),
+    meta: el.meta?.value || '',
+    descricao: el.descricao?.value || '',
+    dataInicio: el.dataInicio?.value || '',
+    dataFim: el.dataFim?.value || '',
+    videoApresentacaoUrl: el.videoApresentacaoUrl?.value || '',
     rubricas,
+    marcos,
     passoAtual,
   };
   localStorage.setItem(CHAVE_RASCUNHO, JSON.stringify(rascunho));
@@ -84,7 +261,7 @@ function renderPassosNav() {
 
 function irParaPasso(numero) {
   passoAtual = numero;
-  ['identificacao', 'projeto', 'orcamento', 'revisao'].forEach((chave, indice) => {
+  ['dados', 'orcamento', 'cronograma', 'revisao'].forEach((chave, indice) => {
     const painel = document.getElementById('passo-' + chave);
     if (painel) painel.classList.toggle('active', indice + 1 === numero);
   });
@@ -108,57 +285,10 @@ function irParaPasso(numero) {
   document.getElementById('form-criar-campanha')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
 }
 
-function renderCapas() {
-  const container = document.getElementById('criar-campanha-capas');
-  if (!container) return;
-  container.innerHTML = CAPAS_CRIAR_CAMPANHA.map((capa) => `
-    <button type="button" data-capa="${capa.id}" class="relative rounded-lg overflow-hidden border-2 h-20 ${capa.id === capaSelecionada ? 'border-primary' : 'borda-padrao'}">
-      <img src="${capa.src}" alt="${escaparHtml(capa.alt)}" class="w-full h-full object-cover">
-      ${capa.id === capaSelecionada ? '<span class="absolute inset-0 bg-primary/20 flex items-center justify-center"><i class="fa-solid fa-circle-check text-white text-xl drop-shadow"></i></span>' : ''}
-    </button>
-  `).join('');
-  container.querySelectorAll('[data-capa]').forEach((botao) => {
-    botao.addEventListener('click', () => {
-      capaSelecionada = botao.dataset.capa;
-      renderCapas();
-      salvarRascunho();
-    });
-  });
-}
-
-function atualizarContadorResumo() {
-  const campo = document.getElementById('criar-campanha-resumo');
-  const contador = document.getElementById('criar-campanha-resumo-contador');
-  if (!campo || !contador) return;
-  contador.textContent = `${campo.value.length}/${LIMITE_RESUMO}`;
-}
-
-function renderModelOptions() {
-  const container = document.getElementById('create-model-options');
-  if (!container) return;
-  container.innerHTML = createModelOptions.map((option) => `
-    <label class="modelo-financiamento-opcao flex-1 rounded-xl border-2 borda-padrao p-5 cursor-pointer fundo-sutil hover:border-primary transition-all" role="radio">
-      <input type="radio" name="modelo-financiamento" value="${escaparHtml(option.value)}" ${option.checked ? 'checked' : ''} class="mr-3 accent-primary">
-      <div class="inline-flex items-center gap-2 font-bold texto-forte mb-1"><i class="fa-solid ${option.icone} texto-marca"></i> ${escaparHtml(option.title)}</div>
-      <div class="text-sm texto-fraco mb-2">${escaparHtml(option.description)}</div>
-      <div class="text-xs texto-marca font-semibold leading-relaxed">${escaparHtml(option.consequencia)}</div>
-    </label>
-  `).join('');
-  container.querySelectorAll('.modelo-financiamento-opcao').forEach((rotulo) => {
-    rotulo.addEventListener('click', () => {
-      container.querySelectorAll('.modelo-financiamento-opcao').forEach((r) => r.classList.remove('border-primary', 'shadow-marca'));
-      rotulo.classList.add('border-primary', 'shadow-marca');
-      salvarRascunho();
-    });
-  });
-  const marcada = container.querySelector('input[name="modelo-financiamento"]:checked');
-  marcada?.closest('.modelo-financiamento-opcao')?.classList.add('border-primary', 'shadow-marca');
-}
-
 function htmlLinhaRubrica(rubrica, indice) {
   return `
     <div class="flex gap-3 items-center" data-rubrica-linha="${indice}">
-      <input type="text" data-rubrica-campo="nome" data-indice="${indice}" value="${escaparHtml(rubrica.nome)}" placeholder="Ex: Reagentes de laboratório" class="input-padrao flex-1">
+      <input type="text" data-rubrica-campo="categoria" data-indice="${indice}" value="${escaparHtml(rubrica.categoria)}" placeholder="Categoria" aria-label="Categoria do item" class="input-padrao flex-1">
       <div class="relative w-40 shrink-0">
         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold texto-fraco">R$</span>
         <input type="number" min="0" data-rubrica-campo="valor" data-indice="${indice}" value="${escaparHtml(rubrica.valor)}" placeholder="0" class="input-padrao pl-9">
@@ -185,7 +315,7 @@ function renderRubricas() {
     botao.addEventListener('click', () => {
       const indice = Number(botao.dataset.rubricaRemover);
       rubricas.splice(indice, 1);
-      if (rubricas.length === 0) rubricas = [{ nome: '', valor: '' }];
+      if (rubricas.length === 0) rubricas = [{ categoria: '', valor: '' }];
       renderRubricas();
       atualizarSomaRubricas();
       salvarRascunho();
@@ -193,11 +323,92 @@ function renderRubricas() {
   });
 }
 
+function htmlLinhaMarco(marco, indice, dataInicio) {
+  return `
+    <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-3 items-center" data-marco-linha="${indice}">
+      <input type="text" data-marco-campo="titulo" data-indice="${indice}" value="${escaparHtml(marco.titulo)}" placeholder="Ex.: Coleta de dados" aria-label="Título do marco ${indice + 1}" class="input-padrao">
+      <input type="date" data-marco-campo="dataPrevista" data-indice="${indice}" value="${escaparHtml(marco.dataPrevista)}" min="${escaparHtml(dataInicio)}" aria-label="Data prevista do marco ${indice + 1}" class="input-padrao">
+      <button type="button" data-marco-remover="${indice}" aria-label="Remover marco ${indice + 1}" class="w-10 h-10 rounded-lg hover-fundo-sutil texto-fraco hover-texto-erro transition-colors">
+        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+      </button>
+    </div>
+  `;
+}
+
+function renderMarcos() {
+  const container = document.getElementById('criar-campanha-marcos');
+  if (!container) return;
+  const el = elementos();
+  container.innerHTML = marcos.map((marco, indice) =>
+    htmlLinhaMarco(marco, indice, el.dataInicio?.value || ''),
+  ).join('');
+
+  container.querySelectorAll('[data-marco-campo]').forEach((campo) => {
+    campo.addEventListener('input', () => {
+      const indice = Number(campo.dataset.indice);
+      marcos[indice][campo.dataset.marcoCampo] = campo.value;
+      salvarRascunho();
+    });
+  });
+  container.querySelectorAll('[data-marco-remover]').forEach((botao) => {
+    botao.addEventListener('click', () => {
+      marcos.splice(Number(botao.dataset.marcoRemover), 1);
+      renderMarcos();
+      salvarRascunho();
+    });
+  });
+}
+
+function atualizarLimitesCronograma() {
+  const el = elementos();
+  const hoje = new Date();
+  const hojeISO = new Date(hoje.getTime() - hoje.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  if (el.dataFim) el.dataFim.min = el.dataInicio?.value || hojeISO;
+  renderMarcos();
+}
+
+function validarDadosCampanha() {
+  const el = elementos();
+  if (!el.dataInicio || !el.dataFim) return false;
+
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const inicio = el.dataInicio.value ? new Date(`${el.dataInicio.value}T00:00:00`) : null;
+  const fim = el.dataFim.value ? new Date(`${el.dataFim.value}T00:00:00`) : null;
+  const duracao = inicio && fim ? Math.round((fim - inicio) / 86400000) : 0;
+  el.dataFim.setCustomValidity(
+    !fim || !inicio || fim < inicio || duracao < 15 || duracao > 60
+      ? 'A campanha precisa durar entre 15 e 60 dias, começando hoje ou depois.'
+      : '',
+  );
+  const campos = [
+    el.titulo,
+    el.area,
+    el.meta,
+    el.modelo,
+    el.dataInicio,
+    el.dataFim,
+    el.videoApresentacaoUrl,
+  ].filter(Boolean);
+  const invalido = campos.find((campo) => !campo.checkValidity());
+  if (invalido) {
+    invalido.reportValidity();
+    return false;
+  }
+  if (inicio < hoje) {
+    el.dataInicio.setCustomValidity('A data de início precisa ser hoje ou depois.');
+    el.dataInicio.reportValidity();
+    el.dataInicio.setCustomValidity('');
+    return false;
+  }
+  return true;
+}
+
 function atualizarSomaRubricas() {
   const container = document.getElementById('criar-campanha-rubricas-soma');
   if (!container) return;
   const soma = rubricas.reduce((total, r) => total + (Number(r.valor) || 0), 0);
-  const meta = Number(document.getElementById('criar-campanha-meta')?.value) || 0;
+  const meta = Number(elementos().meta?.value) || 0;
   const diferenca = meta - soma;
 
   let classe = 'fundo-destaque texto-padrao';
@@ -222,15 +433,18 @@ function renderPreview() {
   const container = document.getElementById('criar-campanha-preview');
   if (!container) return;
   const el = elementos();
-  const capa = CAPAS_CRIAR_CAMPANHA.find((c) => c.id === capaSelecionada) || CAPAS_CRIAR_CAMPANHA[0];
   const areaRotulo = createAreaOptions.find((a) => a.value === el.area?.value)?.label || 'Área não selecionada';
   const meta = Number(el.meta?.value) || 1;
-  const modelo = modeloSelecionado() === 'flex' ? 'flexivel' : 'tudo-ou-nada';
+  const modelo = modeloSelecionado() === 'flexivel' ? 'flexivel' : 'tudo-ou-nada';
+  const dias = el.dataInicio?.value && el.dataFim?.value
+    ? Math.round((new Date(`${el.dataFim.value}T12:00:00`).getTime() - new Date(`${el.dataInicio.value}T12:00:00`).getTime()) / 86400000)
+    : 30;
 
-  container.innerHTML = htmlCardProjeto({
-    image: capa.src,
+  renderizarCardsProjeto(container, [{
+    id: -1,
+    image: 'imagens/projeto-computacao.jpg',
     title: el.titulo?.value || 'Título do projeto',
-    description: el.resumo?.value || 'O resumo do projeto aparece aqui.',
+    description: el.descricao?.value || 'A descrição do projeto aparecerá aqui.',
     institution: 'IFSP (Via Lattes)',
     uf: '-',
     category: areaRotulo,
@@ -245,8 +459,8 @@ function renderPreview() {
     modelo,
     progressLabel: `0% de R$ ${meta.toLocaleString('pt-BR')}`,
     supportLabel: '0 apoios',
-    timeLabel: `${el.prazo?.value || 30} dias rest.`,
-  });
+    timeLabel: `${dias} dias de campanha`,
+  }]);
 }
 
 function renderChecklist() {
@@ -255,12 +469,26 @@ function renderChecklist() {
   const el = elementos();
   const soma = rubricas.reduce((total, r) => total + (Number(r.valor) || 0), 0);
   const meta = Number(el.meta?.value) || 0;
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const dataInicio = el.dataInicio?.value ? new Date(`${el.dataInicio.value}T00:00:00`) : null;
+  const dataFim = el.dataFim?.value ? new Date(`${el.dataFim.value}T00:00:00`) : null;
+  const duracao = dataInicio && dataFim ? Math.round((dataFim - dataInicio) / 86400000) : 0;
+  const cronogramaValido = marcos.filter((marco) => {
+    if (!marco.titulo.trim() || !marco.dataPrevista || !dataInicio) return false;
+    const data = new Date(`${marco.dataPrevista}T00:00:00`);
+    return data >= dataInicio;
+  }).length >= 3;
 
   const itens = [
-    { ok: (el.titulo?.value || '').trim().length >= 10, texto: 'Título claro e específico (mín. 10 caracteres)' },
-    { ok: (el.resumo?.value || '').trim().length >= 20, texto: 'Resumo curto preenchido' },
-    { ok: (el.descricao?.value || '').trim().length >= 40, texto: 'Descrição e metodologia detalhadas' },
+    { ok: Boolean((el.titulo?.value || '').trim()), texto: 'Título preenchido' },
+    { ok: Boolean(el.area?.value), texto: 'Área do conhecimento selecionada' },
+    { ok: meta >= 500, texto: 'Meta igual ou superior a R$ 500,00' },
+    { ok: Boolean(el.dataInicio?.value) && dataInicio >= hoje, texto: 'Data de início hoje ou futura' },
+    { ok: Boolean(el.dataFim?.value) && duracao >= 15 && duracao <= 60, texto: 'Duração entre 15 e 60 dias' },
+    { ok: (el.descricao?.value || '').length <= 5000, texto: 'Descrição dentro do limite de 5.000 caracteres' },
     { ok: meta > 0 && soma === meta, texto: 'Itens do orçamento batem com a meta' },
+    { ok: cronogramaValido, texto: 'Pelo menos três marcos a partir da data de início' },
   ];
 
   container.innerHTML = itens.map((item) => `
@@ -274,14 +502,22 @@ function aplicarRascunho(rascunho) {
   const el = elementos();
   if (el.titulo) el.titulo.value = rascunho.titulo || '';
   if (el.area) el.area.value = rascunho.area || '';
-  if (el.resumo) el.resumo.value = rascunho.resumo || '';
-  if (el.descricao) el.descricao.value = rascunho.descricao || '';
+  if (el.modelo) el.modelo.value = rascunho.modelo === 'flex' ? 'flexivel' : rascunho.modelo || createModelOptions[0].value;
   if (el.meta) el.meta.value = rascunho.meta || '';
-  if (el.prazo) el.prazo.value = rascunho.prazo || 30;
-  capaSelecionada = rascunho.capa || CAPAS_CRIAR_CAMPANHA[0].id;
-  rubricas = Array.isArray(rascunho.rubricas) && rascunho.rubricas.length ? rascunho.rubricas : [{ nome: '', valor: '' }];
-  const radioModelo = document.querySelector(`input[name="modelo-financiamento"][value="${rascunho.modelo}"]`);
-  if (radioModelo) radioModelo.checked = true;
+  if (el.descricao) el.descricao.value = rascunho.descricao || '';
+  if (el.dataInicio) el.dataInicio.value = rascunho.dataInicio || '';
+  if (el.dataFim) el.dataFim.value = rascunho.dataFim || '';
+  if (el.videoApresentacaoUrl) el.videoApresentacaoUrl.value = rascunho.videoApresentacaoUrl || '';
+  rubricas = Array.isArray(rascunho.rubricas) && rascunho.rubricas.length
+    ? rascunho.rubricas.map((item) => ({ categoria: item.categoria || item.nome || '', valor: item.valor || '' }))
+    : [{ categoria: '', valor: '' }];
+  marcos = Array.isArray(rascunho.marcos) && rascunho.marcos.length
+    ? rascunho.marcos.map((marco) => ({ titulo: marco.titulo || '', dataPrevista: marco.dataPrevista || marco.data || '' }))
+    : [{ titulo: '', dataPrevista: '' }, { titulo: '', dataPrevista: '' }, { titulo: '', dataPrevista: '' }];
+  if ('resumo' in rascunho || 'prazo' in rascunho) {
+    const passoLegado = Number(rascunho.passoAtual) || 1;
+    rascunho.passoAtual = passoLegado <= 2 ? 1 : passoLegado === 3 ? 2 : 4;
+  }
 }
 
 export function submeterCriarCampanha() {
@@ -293,61 +529,78 @@ export function submeterCriarCampanha() {
 function descartarRascunho() {
   limparRascunho();
   passoAtual = 1;
-  rubricas = [{ nome: '', valor: '' }];
-  capaSelecionada = CAPAS_CRIAR_CAMPANHA[0].id;
+  rubricas = [{ categoria: '', valor: '' }];
+  marcos = [{ titulo: '', dataPrevista: '' }, { titulo: '', dataPrevista: '' }, { titulo: '', dataPrevista: '' }];
   document.getElementById('form-criar-campanha')?.reset();
-  renderCapas();
-  renderModelOptions();
   renderRubricas();
-  atualizarContadorResumo();
+  atualizarLimitesCronograma();
   atualizarSomaRubricas();
   irParaPasso(1);
   mostrarAcao('Rascunho descartado.');
 }
 
 export function renderCreateFormContent() {
-  const areaSelect = document.getElementById('create-area-options');
-  if (!areaSelect) return;
-
-  areaSelect.innerHTML = createAreaOptions.map(area => `
-        <option value="${escaparHtml(area.value)}">${escaparHtml(area.label)}</option>
-    `).join('');
-
-  renderModelOptions();
-  renderCapas();
+  const container = document.getElementById('criar-campanha-campo-titulo');
+  if (!container) return;
+  renderizarEstruturaFormulario();
+  renderizarCamposDados();
   renderRubricas();
-  atualizarContadorResumo();
+  atualizarLimitesCronograma();
   atualizarSomaRubricas();
   renderPassosNav();
 
   const rascunho = carregarRascunho();
   if (rascunho) {
     aplicarRascunho(rascunho);
-    renderCapas();
-    renderModelOptions();
     renderRubricas();
-    atualizarContadorResumo();
+    renderMarcos();
     atualizarSomaRubricas();
     irParaPasso(rascunho.passoAtual || 1);
   } else {
     irParaPasso(1);
   }
 
-  ['criar-campanha-titulo', 'create-area-options', 'criar-campanha-resumo', 'criar-campanha-descricao', 'criar-campanha-meta', 'criar-campanha-prazo'].forEach((id) => {
-    document.getElementById(id)?.addEventListener('input', () => {
-      if (id === 'criar-campanha-resumo') atualizarContadorResumo();
-      if (id === 'criar-campanha-meta') atualizarSomaRubricas();
+  const el = elementos();
+  [
+    el.titulo,
+    el.area,
+    el.modelo,
+    el.meta,
+    el.descricao,
+    el.dataInicio,
+    el.dataFim,
+    el.videoApresentacaoUrl,
+  ].forEach((campo) => {
+    campo?.addEventListener('input', () => {
+      if (campo === el.meta) atualizarSomaRubricas();
+      if (campo === el.dataInicio || campo === el.dataFim) atualizarLimitesCronograma();
+      salvarRascunho();
+    });
+    campo?.addEventListener('change', () => {
+      if (campo === el.dataInicio && el.dataInicio.value && !el.dataFim.value) {
+        const fimSugerido = new Date(`${el.dataInicio.value}T12:00:00`);
+        fimSugerido.setDate(fimSugerido.getDate() + 30);
+        el.dataFim.value = new Date(fimSugerido.getTime() - fimSugerido.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      }
+      if (campo === el.dataInicio || campo === el.dataFim) atualizarLimitesCronograma();
       salvarRascunho();
     });
   });
 
   document.getElementById('criar-campanha-rubrica-add')?.addEventListener('click', () => {
-    rubricas.push({ nome: '', valor: '' });
+    rubricas.push({ categoria: '', valor: '' });
     renderRubricas();
     salvarRascunho();
   });
 
+  document.getElementById('criar-campanha-marco-add')?.addEventListener('click', () => {
+    marcos.push({ titulo: '', dataPrevista: '' });
+    renderMarcos();
+    salvarRascunho();
+  });
+
   document.getElementById('criar-campanha-avancar')?.addEventListener('click', () => {
+    if (passoAtual === 1 && !validarDadosCampanha()) return;
     if (passoAtual < PASSOS_CRIAR_CAMPANHA.length) irParaPasso(passoAtual + 1);
   });
   document.getElementById('criar-campanha-voltar')?.addEventListener('click', () => {

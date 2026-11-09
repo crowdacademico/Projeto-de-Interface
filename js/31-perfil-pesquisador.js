@@ -1,7 +1,7 @@
 import { escaparHtml, htmlAvatar, htmlSeloReputacao } from './1-utilitarios.js';
 import { PERFIL_PESQUISADOR_FALSO } from '../dados-falsos/15-perfil-pesquisador.js';
 import { PROJETOS_FALSOS } from '../dados-falsos/13-projetos.js';
-import { htmlCardProjeto } from './18-home.js';
+import { renderizarCardsProjeto } from './18-home.js';
 
 function semTitulo(nome) {
   let resultado = nome;
@@ -27,7 +27,6 @@ export function renderizarTelaPerfilPesquisador() {
           <p class="texto-sobre-escuro mt-1">${escaparHtml(p.cargo)}</p>
           <div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-2 mt-3 text-sm texto-sobre-escuro">
             <span class="inline-flex items-center gap-1.5 texto-sobre-escuro-forte font-bold"><i class="fa-solid fa-circle-check texto-marca-sobre-escuro"></i> Pesquisador desde ${escaparHtml(p.dataValidacao)}</span>
-            <span><i class="fa-solid fa-location-dot mr-1"></i>${escaparHtml(p.cidade)}</span>
             <a href="${escaparHtml(p.lattes)}" onclick="mostrarAcao('Link Lattes aberto.'); return false;" class="hover:underline"><i class="fa-solid fa-link mr-1"></i>Lattes</a>
             <span><i class="fa-brands fa-orcid mr-1"></i>ORCID ${escaparHtml(p.orcid)}</span>
           </div>
@@ -56,9 +55,9 @@ export function renderizarTelaPerfilPesquisador() {
   const campanhas = document.getElementById('perfil-pesquisador-campanhas');
   if (campanhas) {
     const projetosDoPesquisador = PROJETOS_FALSOS.filter((proj) => proj.researcher === p.nome);
-    campanhas.innerHTML = projetosDoPesquisador.length > 0
-      ? projetosDoPesquisador.map(htmlCardProjeto).join('')
-      : '<p class="texto-fraco text-sm sm:col-span-2">Nenhuma campanha pública no momento.</p>';
+    renderizarCardsProjeto(campanhas, projetosDoPesquisador, {
+      mensagemVazia: 'Nenhuma campanha pública no momento.',
+    });
   }
 
   const formacao = document.getElementById('perfil-pesquisador-formacao');

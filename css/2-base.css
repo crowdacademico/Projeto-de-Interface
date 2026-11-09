@@ -121,6 +121,12 @@ textarea {
 .fundo-pagina {
   background-color: var(--cor-fundo-pagina);
 }
+.veu-modal {
+  background-color: var(--cor-veu-modal);
+}
+.modal-camada {
+  z-index: var(--z-modal);
+}
 .fundo-cartao {
   background-color: var(--cor-fundo-cartao);
 }

@@ -34,9 +34,39 @@ export function htmlMigalhas(itens) {
   `;
 }
 
+export function renderizarCabecalhoPagina(idContainer, { migalhas, titulo, descricao = '' }) {
+  const container = document.getElementById(idContainer);
+  if (!container) return;
+  const template = document.getElementById('template-cabecalho-pagina');
+  if (!(template instanceof HTMLTemplateElement)) {
+    throw new Error('Componente de cabeçalho de página não foi carregado.');
+  }
+  const conteudo = template.content.firstElementChild.cloneNode(true);
+  conteudo.querySelector('[data-cabecalho-migalhas]').innerHTML = htmlMigalhas(migalhas);
+  const tituloElemento = conteudo.querySelector('[data-cabecalho-titulo]');
+  tituloElemento.textContent = titulo;
+  tituloElemento.classList.toggle('mb-4', Boolean(descricao));
+  tituloElemento.classList.toggle('mb-10', !descricao);
+  const descricaoElemento = conteudo.querySelector('[data-cabecalho-descricao]');
+  descricaoElemento.textContent = descricao;
+  descricaoElemento.classList.toggle('hidden', !descricao);
+  descricaoElemento.classList.toggle('mb-10', Boolean(descricao));
+  container.replaceChildren(conteudo);
+}
+
 export function filtrarEOrdenarProjetos(lista, filtros = {}) {
-  const { busca = '', status = 'todos', areas = [], modelo = 'todos', ordenacao = 'recentes' } = filtros;
+  const {
+    busca = '',
+    status = 'todos',
+    areas = [],
+    grandesAreas = [],
+    subareas = [],
+    modelo = 'todos',
+    ordenacao = 'recentes',
+  } = filtros;
   const areasSet = areas instanceof Set ? areas : new Set(areas);
+  const grandesAreasSet = grandesAreas instanceof Set ? grandesAreas : new Set(grandesAreas);
+  const subareasSet = subareas instanceof Set ? subareas : new Set(subareas);
   const statusSet = status === 'todos' ? null : (status instanceof Set ? status : new Set(Array.isArray(status) ? status : [status]));
   const termo = busca.trim().toLowerCase();
 
@@ -47,6 +77,8 @@ export function filtrarEOrdenarProjetos(lista, filtros = {}) {
     }
     if (statusSet && !statusSet.has(p.status)) return false;
     if (areasSet.size > 0 && !areasSet.has(p.area)) return false;
+    if (grandesAreasSet.size > 0 && !grandesAreasSet.has(p.grandeArea)) return false;
+    if (subareasSet.size > 0 && !subareasSet.has(p.subarea)) return false;
     if (modelo !== 'todos' && p.modelo !== modelo) return false;
     return true;
   });
@@ -65,64 +97,6 @@ export function filtrarEOrdenarProjetos(lista, filtros = {}) {
   }
 
   return filtrados;
-}
-
-export function htmlEstadoVazio({ icone = 'fa-inbox', titulo, mensagem, acaoHtml = '' }) {
-  return `
-    <div class="estado-vazio">
-      <div class="estado-vazio__icone"><i class="fa-solid ${icone}"></i></div>
-      <div class="estado-vazio__titulo">${escaparHtml(titulo)}</div>
-      ${mensagem ? `<p class="text-sm">${escaparHtml(mensagem)}</p>` : ''}
-      ${acaoHtml ? `<div class="estado-vazio__acao">${acaoHtml}</div>` : ''}
-    </div>
-  `;
-}
-
-export function htmlGraficoLinha(pontos) {
-  const largura = 400;
-  const altura = 140;
-  const margem = 12;
-  const valores = pontos.map((p) => p.valorMil);
-  const max = Math.max(...valores);
-  const min = 0;
-  const passoX = (largura - margem * 2) / (pontos.length - 1);
-  const coordenadas = pontos.map((p, i) => {
-    const x = margem + i * passoX;
-    const y = altura - margem - ((p.valorMil - min) / (max - min)) * (altura - margem * 2);
-    return { x, y, ...p };
-  });
-  const linha = coordenadas.map((c) => `${c.x.toFixed(1)},${c.y.toFixed(1)}`).join(' ');
-  const area = `${margem},${altura - margem} ${linha} ${coordenadas[coordenadas.length - 1].x.toFixed(1)},${altura - margem}`;
-
-  return `
-    <svg viewBox="0 0 ${largura} ${altura}" class="w-full h-auto" role="img" aria-label="Gráfico de linha: captação mensal, de ${pontos[0].mes} (R$ ${pontos[0].valorMil} mil) a ${pontos[pontos.length - 1].mes} (R$ ${pontos[pontos.length - 1].valorMil} mil)">
-      <polygon points="${area}" fill="var(--cor-marca-sutil)" />
-      <polyline points="${linha}" fill="none" stroke="var(--cor-marca)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
-      ${coordenadas.map((c) => `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="3" fill="var(--cor-marca)" />`).join('')}
-    </svg>
-    <div class="flex justify-between mt-2 text-xs texto-fraco">
-      ${pontos.map((p) => `<span>${escaparHtml(p.mes)}</span>`).join('')}
-    </div>
-  `;
-}
-
-export const TONS_STATUS = {
-  sucesso: 'fundo-sucesso texto-sucesso',
-  sucessoForte: 'fundo-sucesso texto-sucesso',
-  aviso: 'fundo-aviso texto-aviso',
-  avisoForte: 'fundo-aviso texto-aviso',
-  info: 'fundo-info texto-info',
-  infoForte: 'fundo-info texto-info',
-  perigo: 'fundo-erro texto-erro',
-  perigoForte: 'fundo-erro texto-erro',
-  neutro: 'fundo-realce texto-padrao',
-  institucional: 'fundo-institucional-sutil texto-institucional',
-  urgencia: 'fundo-urgencia-sutil texto-urgencia',
-};
-
-export function classeStatus(item) {
-  if (!item) return '';
-  return item.classeStatus || TONS_STATUS[item.tomStatus] || '';
 }
 
 export function mostrarAcao(mensagem) {

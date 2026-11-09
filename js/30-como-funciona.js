@@ -1,4 +1,4 @@
-import { escaparHtml, htmlMigalhas } from './1-utilitarios.js';
+import { escaparHtml, renderizarCabecalhoPagina } from './1-utilitarios.js';
 import {
   PASSOS_APOIAR,
   TABELA_MODELOS_FINANCIAMENTO,
@@ -238,7 +238,11 @@ function renderizarFaq() {
 
 export function renderizarTelaComoFunciona() {
   if (!document.getElementById('como-funciona-abas')) return;
-  document.getElementById('migalhas-como-funciona').innerHTML = htmlMigalhas([{ rotulo: 'Como funciona' }]);
+  renderizarCabecalhoPagina('cabecalho-pagina-como-funciona', {
+    migalhas: [{ rotulo: 'Como funciona' }],
+    titulo: 'Como funciona',
+    descricao: 'Financiamento coletivo de pesquisa acadêmica, com perfil acadêmico público e curadoria em cada projeto.',
+  });
   renderizarPerfis();
   renderizarAbas();
   renderizarConteudoAba();

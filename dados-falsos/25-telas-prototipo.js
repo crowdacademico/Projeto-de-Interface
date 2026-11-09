@@ -12,9 +12,8 @@ export const TELAS_PROTOTIPO = [
   { rota: 'notificacoes', rotulo: '11. Notificações', grupo: 'Conta' },
   { rota: 'checkout', rotulo: '12. Checkout PIX', grupo: 'Fluxo de apoio' },
   { rota: 'apoio-confirmado', rotulo: '13. Confirmação', grupo: 'Fluxo de apoio' },
-  { rota: 'dash-doador', rotulo: '14. Doador', grupo: 'Painéis internos' },
-  { rota: 'dash-pesquisador', rotulo: '15. Pesquisador', grupo: 'Painéis internos' },
-  { rota: 'criar-campanha', rotulo: '16. Criar Projeto', grupo: 'Painéis internos' },
-  { rota: 'minha-conta', rotulo: '17. Minha Conta', grupo: 'Conta' },
-  { rota: 'termos', rotulo: '18. Termos', grupo: 'Outras' },
+  { rota: 'criar-campanha', rotulo: '14. Criar Projeto', grupo: 'Área do pesquisador' },
+  { rota: 'minha-conta', rotulo: '15. Minha Conta', grupo: 'Conta' },
+  { rota: 'termos', rotulo: '16. Termos', grupo: 'Outras' },
+  { rota: 'guia-estilos', rotulo: 'Guia de estilos', grupo: 'Outras' },
 ];
