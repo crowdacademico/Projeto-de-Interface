@@ -24,7 +24,7 @@ const conteudo = String.raw`<section class="pt-14 pb-24 relative overflow-hidden
             <span class="absolute bottom-4 left-4 bg-white/90 texto-padrao microrrotulo px-3 py-1 rounded-full border borda-padrao">Vídeo incorporado <span class="rf-inline">(RF-033)</span></span>
         </div>
 
-        <div id="project-tab-buttons" class="sticky top-sticky z-sticky fundo-cartao rounded-xl shadow-sm border borda-padrao mb-8 p-2 flex gap-2 overflow-x-auto hide-scrollbar"></div>
+        <div id="project-tab-buttons" role="group" aria-label="Detalhes da campanha" class="sticky top-sticky z-sticky fundo-cartao rounded-xl shadow-sm border borda-padrao mb-8 p-2 flex items-center gap-2 overflow-x-auto hide-scrollbar"></div>
 
         <div class="fundo-cartao rounded-xl shadow-sm border borda-padrao p-8 md:p-10">
             <div id="project-tab-panels"></div>

@@ -552,8 +552,8 @@ function aplicarRascunho(rascunho) {
 
 export function submeterCriarCampanha() {
   limparRascunho();
-  mostrarAcao('Projeto submetido. Status: aguardando aprovação da curadoria.');
-  nav('dash-pesquisador');
+  mostrarAcao('Projeto submetido. Status: aguardando aprovação da curadoria. Acompanhe em Minhas Campanhas.');
+  nav('minhas-campanhas');
 }
 
 function descartarRascunho() {

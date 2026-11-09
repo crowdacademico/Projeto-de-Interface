@@ -1,7 +1,7 @@
 import { inicializarFormularioLogin } from './17-login.js';
 import { atualizarCabecalhoConta } from './7-cabecalho.js';
 import { renderHomeContent } from './18-home.js';
-import { renderProjectTabs, renderProjectSupportInfo, setProjectTab, definirEstadoCampanha, renderApoiadoresRecentes } from './19-campanha.js';
+import { renderProjectTabs, renderProjectSupportInfo, setProjectTab, definirEstadoCampanha, renderApoiadoresRecentes, renderizarComentariosPublicos } from './19-campanha.js';
 import { inicializarCheckout } from './20-checkout.js';
 import { renderizarApoioConfirmado } from './28-apoio-confirmado.js';
 import { renderizarTelaExplorar } from './29-explorar.js';
@@ -14,6 +14,9 @@ import { renderizarTelaAtualizacoes } from './36-atualizacoes.js';
 import { renderizarTelaTermos } from './38-termos.js';
 import { renderizarTelaNotificacoes } from './40-notificacoes.js';
 import { renderizarTelaMinhaConta } from './10-minha-conta.js';
+import { renderizarTelaMinhasCampanhas } from './10-minha-conta.js';
+import { usuarioAtual } from './4-autenticacao-falsa.js';
+import { mostrarAcao } from './1-utilitarios.js';
 import { renderCreateFormContent } from './21-criar-campanha.js';
 import { atualizarBotoesEscalaFonte } from './26-escala-fonte.js';
 import { renderNavFlutuante } from './43-nav-flutuante.js';
@@ -60,6 +63,16 @@ function trocarViewAtiva(view) {
 const preferemMenosMovimento = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 export function nav(view) {
+  if (view === 'campanha') renderizarComentariosPublicos();
+  if (view === 'minhas-campanhas') {
+    const usuario = usuarioAtual();
+    if (!usuario || !usuario.papeis.includes('pesquisador')) {
+      if (usuario) mostrarAcao('A página Minhas campanhas está disponível para pesquisadores cadastrados.');
+      view = 'minha-conta';
+    } else {
+      renderizarTelaMinhasCampanhas();
+    }
+  }
   if (document.startViewTransition && !preferemMenosMovimento.matches) {
     document.startViewTransition(() => trocarViewAtiva(view)).ready.catch(() => {});
   } else {

@@ -220,6 +220,7 @@
   --z-modal: 100;
   --z-aviso: 200;
   --z-dev: 9999;
+  --camada-modal: calc(var(--z-dev) + 1);
 
   --anel-foco: 0 0 0 3px rgba(15, 155, 88, 0.18), 0 0 0 5px var(--color-primary);
 
@@ -247,6 +248,7 @@
   --largura-conteudo: 80rem;
   --largura-conteudo-estreita: 56rem;
   --largura-leitura: 68ch;
+  --largura-modal-compacta: min(var(--largura-leitura), calc(100vw - var(--espaco-8)));
   --largura-coluna-apoio: 25rem;
   --largura-sidebar-conta: 17.5rem;
   --largura-sidebar-admin: 16.25rem;

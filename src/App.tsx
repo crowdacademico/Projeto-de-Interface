@@ -15,6 +15,7 @@ import { TelaGuiaEstilos } from './screens/GuiaEstilos';
 import { TelaHome } from './screens/Home';
 import { TelaLogin } from './screens/Login';
 import { TelaMinhaConta } from './screens/MinhaConta';
+import { TelaMinhasCampanhas } from './screens/MinhasCampanhas';
 import { TelaNotificacoes } from './screens/Notificacoes';
 import { TelaPerfilPesquisador } from './screens/PerfilPesquisador';
 import { TelaSobre } from './screens/Sobre';
@@ -77,6 +78,7 @@ export default function App() {
         <TelaTermos />
         <TelaNotificacoes />
         <TelaMinhaConta />
+        <TelaMinhasCampanhas />
         <TelaCampanha />
         <TelaCheckout />
         <TelaApoioConfirmado />

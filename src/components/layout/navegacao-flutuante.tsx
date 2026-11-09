@@ -11,7 +11,9 @@ const conteudo = String.raw`<div class="fixed bottom-4 right-4 z-dev flex flex-c
             <div class="grid grid-cols-2 gap-2 mb-4">
                 <button onclick="entrarComoUsuarioTeste(1)" class="bg-slate-800 hover:bg-primary px-3 py-2 rounded text-left transition-colors"><i class="fa-solid fa-right-to-bracket"></i> Entrar como Usuário Comum</button>
                 <button onclick="entrarComoUsuarioTeste(2)" class="bg-slate-800 hover:bg-primary px-3 py-2 rounded text-left transition-colors"><i class="fa-solid fa-right-to-bracket"></i> Entrar como Pesquisador</button>
-                <button onclick="sairUsuarioTeste()" class="col-start-2 bg-slate-800 hover:bg-primary px-3 py-2 rounded text-left transition-colors"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+                <button onclick="entrarComoUsuarioTeste(3)" class="bg-slate-800 hover:bg-primary px-3 py-2 rounded text-left transition-colors"><i class="fa-solid fa-shield-halved"></i> Entrar como Administrador</button>
+                <button onclick="entrarComoUsuarioTeste(4)" class="bg-slate-800 hover:bg-primary px-3 py-2 rounded text-left transition-colors"><i class="fa-solid fa-user-shield"></i> Admin pesquisador</button>
+                <button onclick="sairUsuarioTeste()" class="bg-slate-800 hover:bg-primary px-3 py-2 rounded text-left transition-colors"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
             </div>
 
             <div id="grupos-telas-prototipo"></div>

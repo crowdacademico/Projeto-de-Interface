@@ -2,6 +2,9 @@ import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import { SeloStatusCampanha } from '../src/components/crud/selo-status-campanha';
+import { ModalComentarCampanha } from '../src/components/crud/modal-comentar-campanha';
+import { usuarioAtual } from './4-autenticacao-falsa.js';
+import { obterComentariosCampanha, registrarComentarioCampanha } from './10-minha-conta.js';
 import { projectTabs, projectSupportInfo, CAMPANHA_LINHA_DO_TEMPO } from '../dados-falsos/8-campanha.js';
 import { ORCAMENTO_RUBRICAS, ORCAMENTO_TOTAL } from '../dados-falsos/28-orcamento.js';
 import { APOIADORES_RECENTES, TOTAL_APOIADORES } from '../dados-falsos/27-apoiadores.js';
@@ -11,6 +14,8 @@ import { escaparHtml, htmlEscalaProgresso, htmlAvatar } from './1-utilitarios.js
 
 const CORES_ORCAMENTO = ['var(--cor-cianotipo-600)', 'var(--cor-cianotipo-500)', 'var(--cor-cianotipo-400)', 'var(--cor-cianotipo-300)'];
 let raizSeloStatusCampanha;
+let raizComentariosCampanha;
+const NOME_CAMPANHA_COMENTARIOS = 'Microplásticos no Rio Paraná';
 
 function renderOrcamentoCampanha() {
     const container = document.getElementById('orcamento-conteudo-campanha');
@@ -92,9 +97,8 @@ export function renderProjectTabs() {
     if (!buttonsContainer && !panelsContainer) return;
 
     if (buttonsContainer) {
-
         buttonsContainer.innerHTML = projectTabs.map(tab => `
-            <button onclick="setProjectTab('${tab.id}')" id="tab-btn-${tab.id}" class="${tab.id === 'sobre' ? 'texto-forte font-bold border-primary' : 'texto-fraco hover-texto-forte font-medium border-transparent'} border-b-2 px-4 py-3 text-sm whitespace-nowrap transition flex items-center gap-2">
+            <button type="button" onclick="setProjectTab('${tab.id}')" id="tab-btn-${tab.id}" aria-controls="tab-${tab.id}" aria-pressed="${tab.id === 'sobre'}" class="${tab.id === 'sobre' ? 'texto-marca font-bold borda-marca' : 'texto-fraco hover-texto-forte font-medium border-transparent'} shrink-0 border-b-2 px-4 py-3 text-sm whitespace-nowrap transition flex items-center gap-2">
                 ${escaparHtml(tab.label)}
                 ${tab.badge ? `<span class="${tab.badgeClass ? 'tab-badge ' + tab.badgeClass : 'tab-badge fundo-realce texto-padrao'}">${escaparHtml(tab.badge)}</span>` : ''}
             </button>
@@ -103,14 +107,32 @@ export function renderProjectTabs() {
 
     if (panelsContainer) {
         panelsContainer.innerHTML = projectTabs.map(tab => `
-            <div id="tab-${tab.id}" class="tab-content ${tab.id === 'sobre' ? 'active' : ''}">
+            <section id="tab-${tab.id}" aria-labelledby="tab-btn-${tab.id}" class="tab-content ${tab.id === 'sobre' ? 'active' : ''}">
                 ${tab.content}
-            </div>
+            </section>
         `).join('');
 
         renderOrcamentoCampanha();
         renderLinhaDoTempoCampanha();
     }
+    renderizarComentariosPublicos();
+}
+
+export function renderizarComentariosPublicos() {
+  const host = document.getElementById('comentarios-campanha-publica');
+  if (!host) return;
+  const usuario = usuarioAtual();
+  if (!raizComentariosCampanha) raizComentariosCampanha = createRoot(host);
+  flushSync(() => raizComentariosCampanha.render(createElement(ModalComentarCampanha, {
+    campanha: NOME_CAMPANHA_COMENTARIOS,
+    comentarios: obterComentariosCampanha(),
+    podeComentar: Boolean(usuario?.papeis?.includes('pesquisador')),
+    aoEnviar: (texto) => {
+      registrarComentarioCampanha(NOME_CAMPANHA_COMENTARIOS, texto);
+      renderizarComentariosPublicos();
+      mostrarAviso('Comentário enviado. Ele ficará visível após o endosso do pesquisador responsável.');
+    },
+  })));
 }
 
 export function renderProjectSupportInfo() {
@@ -251,9 +273,10 @@ export function setProjectTab(tab) {
         const button = document.getElementById('tab-btn-' + current);
         if (content) content.classList.toggle('active', current === tab);
         if (button) {
-            button.classList.toggle('border-primary', current === tab);
+            button.setAttribute('aria-pressed', String(current === tab));
+            button.classList.toggle('borda-marca', current === tab);
             button.classList.toggle('border-transparent', current !== tab);
-            button.classList.toggle('texto-forte', current === tab);
+            button.classList.toggle('texto-marca', current === tab);
             button.classList.toggle('font-bold', current === tab);
             button.classList.toggle('texto-fraco', current !== tab);
             button.classList.toggle('font-medium', current !== tab);

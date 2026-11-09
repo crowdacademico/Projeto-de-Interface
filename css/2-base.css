@@ -124,6 +124,20 @@ textarea {
 .fundo-pagina {
   background-color: var(--cor-fundo-pagina);
 }
+.fundo-escurecido {
+  z-index: var(--camada-modal);
+}
+@media (min-width: 48rem) {
+  .fundo-escurecido > [role='dialog'] {
+    max-width: var(--largura-modal-compacta);
+    max-height: calc(100vh - var(--espaco-8));
+  }
+  .fundo-escurecido > [role='dialog'] > :nth-child(1),
+  .fundo-escurecido > [role='dialog'] > :nth-child(2),
+  .fundo-escurecido > [role='dialog'] > :nth-child(3) {
+    padding: var(--espaco-4) var(--espaco-6);
+  }
+}
 .veu-modal {
   background-color: var(--cor-veu-modal);
 }
