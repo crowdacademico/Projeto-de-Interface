@@ -4,6 +4,7 @@ import { flushSync } from 'react-dom';
 import { SeloStatusConta } from '../src/components/crud/selo-status-conta';
 import { PerfilContaPublica } from '../src/components/crud/perfil-conta-publica';
 import { ModalAlterarSenha } from '../src/components/crud/modal-alterar-senha';
+import { GerenciadorCampanhas } from '../src/components/crud/gerenciador-campanhas';
 import { usuarioAtual } from './4-autenticacao-falsa.js';
 import { papeisDoUsuario } from '../dados-falsos/1-usuarios.js';
 import {
@@ -11,7 +12,7 @@ import {
   CAMPANHAS_PESQUISADORAS_INICIAIS,
   COMENTARIOS_PESQUISADOR_INICIAIS,
 } from '../dados-falsos/26-minha-conta.js';
-import { htmlAvatar, escaparHtml, escaparAtributo, formatarData, formatarDataHora, mostrarAcao, htmlMigalhas } from './1-utilitarios.js';
+import { htmlAvatar, escaparHtml, formatarData, formatarDataHora, mostrarAcao, htmlMigalhas } from './1-utilitarios.js';
 import { atualizarCabecalhoConta } from './7-cabecalho.js';
 import { nav } from './24-roteador.js';
 
@@ -38,6 +39,7 @@ const TONS_ESTADO = {
 let raizSeloStatusConta;
 let raizPerfilConta;
 let raizSenhaConta;
+let raizGerenciadorCampanhas;
 let estadoAtual;
 let abaAtiva = 'visao';
 
@@ -47,6 +49,74 @@ function clonar(valor) {
 
 function chaveEstado(usuario) {
   return `${CHAVE_ESTADO_CONTA}.${usuario.idUsuario}`;
+}
+
+function normalizarCampanha(campanha, inicial = {}) {
+  const recompensasIniciais = Array.isArray(inicial.recompensas) ? inicial.recompensas : [];
+  const atualizacoesIniciais = Array.isArray(inicial.atualizacoes) ? inicial.atualizacoes : [];
+  const comentariosIniciais = Array.isArray(inicial.comentarios) ? inicial.comentarios : [];
+  const contribuicoesIniciais = Array.isArray(inicial.contribuicoes) ? inicial.contribuicoes : [];
+  const recompensas = Array.isArray(campanha.recompensas)
+    ? campanha.recompensas.map((recompensa, indice) => {
+      if (typeof recompensa !== 'string') return { ...recompensasIniciais[indice], ...recompensa };
+      return recompensasIniciais.find((item) => item.titulo === recompensa) || {
+        id: `migrada-${campanha.id}-${indice}`,
+        titulo: recompensa,
+        descricao: '',
+        tipo: 'reconhecimento',
+        valorMinimo: '1.00',
+        quantidadeDisponivel: null,
+        escolhidas: 0,
+        ativo: true,
+        url: '',
+        tipoLink: '',
+      };
+    })
+    : recompensasIniciais;
+  const atualizacoes = Array.isArray(campanha.atualizacoes)
+    ? campanha.atualizacoes.map((atualizacao, indice) => ({
+      ...atualizacoesIniciais[indice],
+      ...atualizacao,
+      id: atualizacao.id || atualizacoesIniciais[indice]?.id || `migrada-${campanha.id}-atualizacao-${indice}`,
+      mensagem: atualizacao.mensagem || '',
+      fase: atualizacao.fase || 'andamento',
+      tipo: atualizacao.tipo || 'texto',
+      ativo: atualizacao.ativo !== false,
+    }))
+    : atualizacoesIniciais;
+  const comentarios = Array.isArray(campanha.comentarios)
+    ? campanha.comentarios.map((comentario, indice) => ({
+      ...comentariosIniciais[indice],
+      ...comentario,
+      id: comentario.id || comentariosIniciais[indice]?.id || `migrada-${campanha.id}-comentario-${indice}`,
+      criadoEm: comentario.criadoEm || '2026-08-01',
+      ativo: comentario.ativo !== false,
+    }))
+    : comentariosIniciais;
+
+  return {
+    ...inicial,
+    ...campanha,
+    capaUrl: campanha.capaUrl || inicial.capaUrl || 'imagens/projeto-biologicas.jpg',
+    videoUrl: campanha.videoUrl || '',
+    dataInicio: campanha.dataInicio || '',
+    dataFim: campanha.dataFim || '',
+    modalidade: campanha.modalidade || 'all-or-nothing',
+    recompensas,
+    atualizacoes,
+    comentarios,
+    contribuicoes: Array.isArray(campanha.contribuicoes) ? campanha.contribuicoes : contribuicoesIniciais,
+  };
+}
+
+function normalizarListaCampanhas(campanhasSalvas, campanhasIniciais) {
+  const normalizadas = campanhasSalvas.map((campanha) =>
+    normalizarCampanha(campanha, campanhasIniciais.find((item) => item.id === campanha.id)));
+  const idsSalvos = new Set(normalizadas.map((campanha) => campanha.id));
+  return [
+    ...normalizadas,
+    ...campanhasIniciais.filter((campanha) => !idsSalvos.has(campanha.id)),
+  ];
 }
 
 function estadoInicial(usuario) {
@@ -81,7 +151,9 @@ function lerEstado(usuario) {
       ...valor,
       atividade: { ...inicial.atividade, ...valor.atividade },
       pesquisador: { ...inicial.pesquisador, ...valor.pesquisador },
-      campanhas: Array.isArray(valor.campanhas) ? valor.campanhas : inicial.campanhas,
+      campanhas: Array.isArray(valor.campanhas)
+        ? normalizarListaCampanhas(valor.campanhas, inicial.campanhas)
+        : inicial.campanhas,
       comentarios: Array.isArray(valor.comentarios) ? valor.comentarios : inicial.comentarios,
     };
   } catch {
@@ -126,16 +198,6 @@ function htmlCartao(titulo, conteudo, classe = '') {
       <h2 class="subtitulo texto-forte mb-4">${titulo}</h2>
       ${conteudo}
     </section>
-  `;
-}
-
-function htmlCampo(rotulo, valor, id, tipo = 'text', desabilitado = false) {
-  return `
-    <label class="block">
-      <span class="rotulo-campo">${rotulo}</span>
-      <input id="${id}" name="${id}" type="${tipo}" value="${escaparAtributo(valor || '')}" class="input-padrao"
-        ${desabilitado ? 'disabled' : ''}>
-    </label>
   `;
 }
 
@@ -280,46 +342,6 @@ function htmlAtividade() {
   `);
 }
 
-function htmlCampanha(campanha) {
-  const comentariosPendentes = campanha.comentarios.filter((comentario) => !comentario.endossado);
-  return `
-    <article class="rounded-xl border borda-padrao fundo-cartao p-5">
-      <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
-        <div class="min-w-0 flex-1">
-          <div class="mb-2 flex flex-wrap items-center gap-2"><h3 class="subtitulo texto-forte">${escaparHtml(campanha.titulo)}</h3>${htmlSelo(campanha.estado)}</div>
-          <p class="text-sm texto-padrao">${escaparHtml(campanha.resumo)}</p>
-          <p class="mt-3 text-sm texto-fraco">Arrecadado: <strong class="texto-forte">${escaparHtml(campanha.arrecadado)}</strong> · Meta: <strong class="texto-forte">R$ ${Number(campanha.meta).toLocaleString('pt-BR')}</strong></p>
-          <p class="mt-1 text-xs texto-fraco">${campanha.recompensas.length} recompensas · ${campanha.atualizacoes.length} atualizações · ${comentariosPendentes.length} comentário(s) aguardando endosso</p>
-        </div>
-        <div class="flex flex-wrap gap-2 sm:justify-end">
-          <button type="button" class="btn btn-secondary btn-pequeno" data-acao-campanha="editar" data-id-campanha="${campanha.id}" ${campanha.estado === 'Finalizada' ? 'disabled' : ''}>Editar</button>
-          <button type="button" class="btn btn-secondary btn-pequeno" data-acao-campanha="recompensas" data-id-campanha="${campanha.id}">Recompensas</button>
-          <button type="button" class="btn btn-secondary btn-pequeno" data-acao-campanha="atualizacoes" data-id-campanha="${campanha.id}">Atualizações</button>
-        </div>
-      </div>
-      ${comentariosPendentes.length ? `<div class="mt-5 border-t borda-padrao pt-4"><h4 class="rotulo mb-3">Comentários para endossar</h4><ul class="space-y-3">${comentariosPendentes.map((comentario, indice) => `<li class="flex flex-col justify-between gap-3 rounded-lg fundo-sutil p-3 sm:flex-row sm:items-center"><p class="text-sm texto-padrao"><strong class="texto-forte">${escaparHtml(comentario.autor)}:</strong> ${escaparHtml(comentario.texto)}</p><button type="button" class="btn btn-primary btn-pequeno self-start sm:self-center" data-endossar="${campanha.id}" data-indice-comentario="${indice}"><i class="fa-solid fa-check mr-1"></i>Endossar</button></li>`).join('')}</ul></div>` : ''}
-    </article>
-  `;
-}
-
-function htmlCampanhas() {
-  const grupos = ['Ativa', 'Finalizada', 'Rascunho'];
-  return `
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div><h2 class="subtitulo texto-forte">Campanhas criadas por você</h2><p class="mt-1 text-sm texto-fraco">Edite as campanhas, acompanhe o estado e gerencie recompensas e atualizações.</p></div>
-      <button type="button" class="btn btn-primary" data-acao="criar-campanha"><i class="fa-solid fa-plus mr-2"></i>Cadastrar campanha</button>
-    </div>
-    ${grupos.map((grupo) => {
-      const lista = estadoAtual.campanhas.filter((campanha) =>
-        grupo === 'Ativa' ? campanha.estado === 'Em captação' : campanha.estado === grupo);
-      return htmlCartao(`${grupo} (${lista.length})`, lista.length ? `<div class="space-y-4">${lista.map(htmlCampanha).join('')}</div>` : '<p class="text-sm texto-fraco">Nenhuma campanha nesta situação.</p>');
-    }).join('')}
-    <dialog id="modal-conta-campanha" class="w-[min(42rem,calc(100%-2rem))] rounded-2xl border borda-padrao fundo-cartao p-0 text-left shadow-2xl backdrop:bg-black/50" aria-labelledby="modal-conta-campanha-titulo">
-      <div id="conteudo-modal-conta-campanha"></div>
-    </dialog>
-  `;
-}
-
 function htmlComunidade() {
   return htmlPainel('comunidade', `
     ${htmlCartao('Comentários feitos em outras campanhas', `
@@ -330,13 +352,6 @@ function htmlComunidade() {
           <p class="text-sm texto-padrao">${escaparHtml(comentario.texto)}</p>
         </li>
       `).join('') || '<li class="text-sm texto-fraco">Você ainda não comentou em campanhas.</li>'}</ul>
-    `)}
-    ${htmlCartao('Endossos nas suas campanhas', `
-      ${estadoAtual.campanhas.map((campanha) => `
-        <div class="mb-4 last:mb-0"><h3 class="rotulo mb-2">${escaparHtml(campanha.titulo)}</h3>
-          ${campanha.comentarios.length ? `<ul class="space-y-2">${campanha.comentarios.map((comentario) => `<li class="flex flex-wrap items-center justify-between gap-3 rounded-lg fundo-sutil p-3"><p class="flex-1 text-sm texto-padrao"><strong>${escaparHtml(comentario.autor)}:</strong> ${escaparHtml(comentario.texto)}</p>${comentario.endossado ? '<span class="badge badge-sucesso">Endossado e público</span>' : `<button type="button" class="btn btn-primary btn-pequeno" data-endossar="${campanha.id}" data-indice-comentario="${campanha.comentarios.indexOf(comentario)}">Endossar comentário</button>`}</li>`).join('')}</ul>` : '<p class="text-sm texto-fraco">Ainda não há comentários nesta campanha.</p>'}
-        </div>
-      `).join('')}
     `)}
   `);
 }
@@ -448,132 +463,6 @@ function vincularBotoes() {
     botao.addEventListener('click', () => {
       ativarAba(botao.dataset.irAba);
       document.getElementById(`aba-conta-${botao.dataset.irAba}`)?.focus();
-    });
-  });
-}
-
-function campanhaPorId(id) {
-  return estadoAtual.campanhas.find((campanha) => campanha.id === id);
-}
-
-function abrirDialogoCampanha(campanha, acao) {
-  const dialogo = document.getElementById('modal-conta-campanha');
-  const conteudo = document.getElementById('conteudo-modal-conta-campanha');
-  if (!dialogo || !conteudo) return;
-  const fechar = '<button type="button" class="btn btn-secondary" data-fechar-dialogo>Fechar</button>';
-  let corpo = '';
-  let titulo = '';
-
-  if (acao === 'editar') {
-    titulo = 'Editar campanha';
-    corpo = `
-      <form id="form-editar-campanha" class="space-y-4 p-6">
-        ${htmlCampo('Título', campanha.titulo, 'editar-campanha-titulo')}
-        <label class="block"><span class="rotulo-campo">Resumo</span><textarea id="editar-campanha-resumo" class="input-padrao" rows="3">${escaparHtml(campanha.resumo)}</textarea></label>
-        ${htmlCampo('Meta (R$)', campanha.meta, 'editar-campanha-meta', 'number')}
-        <label class="block"><span class="rotulo-campo">Situação</span><select id="editar-campanha-estado" class="input-padrao">${['Rascunho', 'Em captação', 'Finalizada'].map((estado) => `<option ${estado === campanha.estado ? 'selected' : ''}>${estado}</option>`).join('')}</select></label>
-        <p class="text-xs texto-fraco">A edição é demonstrativa e fica salva neste navegador.</p>
-        <div class="flex justify-end gap-2">${fechar}<button type="submit" class="btn btn-primary">Salvar alterações</button></div>
-      </form>
-    `;
-  } else if (acao === 'recompensas') {
-    titulo = 'Gerenciar recompensas';
-    corpo = `
-      <div class="space-y-4 p-6">
-        <ul class="space-y-2">${campanha.recompensas.map((recompensa, indice) => `<li class="flex items-center justify-between gap-3 rounded-lg fundo-sutil p-3"><span class="text-sm texto-padrao">${escaparHtml(recompensa)}</span><button type="button" class="btn btn-danger btn-pequeno" data-remover-recompensa="${indice}" aria-label="Remover recompensa ${escaparAtributo(recompensa)}"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></li>`).join('') || '<li class="text-sm texto-fraco">Nenhuma recompensa cadastrada.</li>'}</ul>
-        <form id="form-adicionar-recompensa" class="flex flex-col gap-2 sm:flex-row">${htmlCampo('Nova recompensa', '', 'nova-recompensa')}<button type="submit" class="btn btn-primary shrink-0">Adicionar</button></form>
-        <div class="flex justify-end">${fechar}</div>
-      </div>
-    `;
-  } else {
-    titulo = 'Publicar atualização';
-    corpo = `
-      <form id="form-adicionar-atualizacao" class="space-y-4 p-6">
-        ${htmlCampo('Título da atualização', '', 'nova-atualizacao-titulo')}
-        <label class="block"><span class="rotulo-campo">Mensagem</span><textarea id="nova-atualizacao-mensagem" class="input-padrao" rows="4" required></textarea></label>
-        <div class="flex justify-end gap-2">${fechar}<button type="submit" class="btn btn-primary">Publicar atualização</button></div>
-      </form>
-    `;
-  }
-  conteudo.innerHTML = `
-    <header class="flex items-center justify-between gap-3 border-b borda-padrao p-6">
-      <h2 id="modal-conta-campanha-titulo" class="subtitulo texto-forte">${titulo}: ${escaparHtml(campanha.titulo)}</h2>
-      <button type="button" class="btn btn-secondary btn-pequeno" data-fechar-dialogo aria-label="Fechar janela">Fechar</button>
-    </header>${corpo}
-  `;
-  dialogo.showModal();
-  dialogo.querySelectorAll('[data-fechar-dialogo]').forEach((botao) => botao.addEventListener('click', () => dialogo.close()));
-
-  document.getElementById('form-editar-campanha')?.addEventListener('submit', (evento) => {
-    evento.preventDefault();
-    const tituloNovo = document.getElementById('editar-campanha-titulo').value.trim();
-    const meta = Number(document.getElementById('editar-campanha-meta').value);
-    if (!tituloNovo || !Number.isFinite(meta) || meta < 500) {
-      mostrarAcao('Informe um título e uma meta igual ou superior a R$ 500,00.');
-      return;
-    }
-    campanha.titulo = tituloNovo;
-    campanha.resumo = document.getElementById('editar-campanha-resumo').value.trim();
-    campanha.meta = String(meta);
-    campanha.estado = document.getElementById('editar-campanha-estado').value;
-    salvarEstado();
-    dialogo.close();
-    renderizarTelaMinhasCampanhas();
-    mostrarAcao('Campanha atualizada neste protótipo.');
-  });
-  document.getElementById('form-adicionar-recompensa')?.addEventListener('submit', (evento) => {
-    evento.preventDefault();
-    const recompensa = document.getElementById('nova-recompensa').value.trim();
-    if (!recompensa) return;
-    campanha.recompensas.push(recompensa);
-    salvarEstado();
-    dialogo.close();
-    renderizarTelaMinhasCampanhas();
-    mostrarAcao('Recompensa adicionada.');
-  });
-  dialogo.querySelectorAll('[data-remover-recompensa]').forEach((botao) => {
-    botao.addEventListener('click', () => {
-      campanha.recompensas.splice(Number(botao.dataset.removerRecompensa), 1);
-      salvarEstado();
-      dialogo.close();
-      renderizarTelaMinhasCampanhas();
-      mostrarAcao('Recompensa removida.');
-    });
-  });
-  document.getElementById('form-adicionar-atualizacao')?.addEventListener('submit', (evento) => {
-    evento.preventDefault();
-    const tituloAtualizacao = document.getElementById('nova-atualizacao-titulo').value.trim();
-    const mensagem = document.getElementById('nova-atualizacao-mensagem').value.trim();
-    if (!tituloAtualizacao || !mensagem) return;
-    campanha.atualizacoes.push({ titulo: tituloAtualizacao, mensagem, data: formatarData(new Date()) });
-    salvarEstado();
-    dialogo.close();
-    renderizarTelaMinhasCampanhas();
-    mostrarAcao('Atualização publicada neste protótipo.');
-  });
-}
-
-function vincularAcoesPesquisador(raiz = document) {
-  raiz.querySelectorAll('[data-acao-campanha]').forEach((botao) => {
-    botao.addEventListener('click', () => {
-      const campanha = campanhaPorId(botao.dataset.idCampanha);
-      if (campanha) abrirDialogoCampanha(campanha, botao.dataset.acaoCampanha);
-    });
-  });
-  raiz.querySelectorAll('[data-endossar]').forEach((botao) => {
-    botao.addEventListener('click', () => {
-      const campanha = campanhaPorId(botao.dataset.endossar);
-      const comentario = campanha?.comentarios[Number(botao.dataset.indiceComentario)];
-      if (!comentario) return;
-      comentario.endossado = true;
-      salvarEstado();
-      if (document.getElementById('view-minhas-campanhas')?.classList.contains('active')) {
-        renderizarTelaMinhasCampanhas();
-      } else {
-        renderizarTelaMinhaConta();
-        ativarAba('comunidade');
-      }
-      mostrarAcao('Comentário endossado e marcado como público.');
     });
   });
 }
@@ -715,9 +604,6 @@ export function renderizarTelaMinhaConta() {
   })));
   vincularBotoes();
   vincularAcoesGerais(secoes);
-  if (temPapel(usuario, 'pesquisador')) {
-    vincularAcoesPesquisador(secoes);
-  }
   ativarAba(abaAtiva);
 }
 
@@ -733,7 +619,14 @@ export function renderizarTelaMinhasCampanhas() {
   estadoAtual = lerEstado(usuario);
   const migalhas = document.getElementById('migalhas-minhas-campanhas');
   if (migalhas) migalhas.innerHTML = htmlMigalhas([{ rotulo: 'Minhas campanhas' }]);
-  host.innerHTML = htmlCampanhas();
-  vincularAcoesGerais(host);
-  vincularAcoesPesquisador(host);
+  if (!raizGerenciadorCampanhas) raizGerenciadorCampanhas = createRoot(host);
+  flushSync(() => raizGerenciadorCampanhas.render(createElement(GerenciadorCampanhas, {
+    campanhas: estadoAtual.campanhas,
+    aoAlterar: (campanhas) => {
+      estadoAtual.campanhas = campanhas;
+      salvarEstado();
+      renderizarTelaMinhasCampanhas();
+    },
+    aoCriarCampanha: () => nav('criar-campanha'),
+  })));
 }
