@@ -9,7 +9,6 @@ import { renderizarTelaComoFunciona } from './30-como-funciona.js';
 import { renderizarTelaPerfilPesquisador } from './31-perfil-pesquisador.js';
 import { renderizarTelaSobre } from './32-sobre.js';
 import { renderizarTelaTransparencia } from './34-transparencia.js';
-import { renderizarTelaCadastro } from './35-cadastro.js';
 import { renderizarTelaAtualizacoes } from './36-atualizacoes.js';
 import { renderizarTelaTermos } from './38-termos.js';
 import { renderizarTelaNotificacoes } from './40-notificacoes.js';
@@ -28,7 +27,6 @@ export async function inicializarApp() {
   renderizarTelaPerfilPesquisador();
   renderizarTelaSobre();
   renderizarTelaTransparencia();
-  renderizarTelaCadastro();
   renderizarTelaAtualizacoes();
   renderizarTelaTermos();
   renderizarTelaNotificacoes();

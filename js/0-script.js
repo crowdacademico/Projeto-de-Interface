@@ -11,15 +11,6 @@ import { navegarExplorarPorArea } from './29-explorar.js';
 import { alternarSeguirProjeto, verTodasPerguntas } from './18-home.js';
 import { aumentarFonte, diminuirFonte } from './26-escala-fonte.js';
 import { mudarAbaComoFunciona } from './30-como-funciona.js';
-import {
-  selecionarTipoContaCadastro,
-  atualizarCampoCadastro,
-  atualizarCpfCadastro,
-  atualizarAceiteCadastro,
-  validarLattesCadastro,
-  voltarPassoCadastro,
-  avancarPassoCadastro,
-} from './35-cadastro.js';
 import { mudarFiltroAtualizacoes } from './36-atualizacoes.js';
 import { abrirMenuMovel, fecharMenuMovel } from './37-menu-movel.js';
 import { atualizarAceiteTermos, confirmarAceiteTermos } from './38-termos.js';
@@ -48,13 +39,6 @@ Object.assign(window, {
   aumentarFonte,
   diminuirFonte,
   mudarAbaComoFunciona,
-  selecionarTipoContaCadastro,
-  atualizarCampoCadastro,
-  atualizarCpfCadastro,
-  atualizarAceiteCadastro,
-  validarLattesCadastro,
-  voltarPassoCadastro,
-  avancarPassoCadastro,
   mudarFiltroAtualizacoes,
   abrirMenuMovel,
   fecharMenuMovel,
