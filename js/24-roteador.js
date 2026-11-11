@@ -1,7 +1,7 @@
 import { inicializarFormularioLogin } from './17-login.js';
 import { atualizarCabecalhoConta } from './7-cabecalho.js';
 import { renderHomeContent } from './18-home.js';
-import { renderProjectTabs, renderProjectSupportInfo, setProjectTab, definirEstadoCampanha, renderApoiadoresRecentes } from './19-campanha.js';
+import { renderProjectTabs, renderProjectSupportInfo, setProjectTab, definirEstadoCampanha, renderApoiadoresRecentes, renderizarComentariosPublicos } from './19-campanha.js';
 import { inicializarCheckout } from './20-checkout.js';
 import { renderizarApoioConfirmado } from './28-apoio-confirmado.js';
 import { renderizarTelaExplorar } from './29-explorar.js';
@@ -13,10 +13,13 @@ import { renderizarTelaCadastro } from './35-cadastro.js';
 import { renderizarTelaAtualizacoes } from './36-atualizacoes.js';
 import { renderizarTelaTermos } from './38-termos.js';
 import { renderizarTelaNotificacoes } from './40-notificacoes.js';
-import { renderizarTelaMinhaConta } from './10-minha-conta.js';
+import { renderizarTelaMinhaConta, renderizarTelaMinhasCampanhas } from './10-minha-conta.js';
+import { usuarioAtual } from './4-autenticacao-falsa.js';
+import { mostrarAcao } from './1-utilitarios.js';
 import { renderDonorDashboard } from './22-dash-doador.js';
 import { renderResearcherDashboard } from './23-dash-pesquisador.js';
 import { renderCreateFormContent } from './21-criar-campanha.js';
+import { renderizarTelaGuiaEstilos } from './48-guia-estilos.js';
 import { atualizarBotoesEscalaFonte } from './26-escala-fonte.js';
 import { renderNavFlutuante } from './43-nav-flutuante.js';
 import { ATRASO_SIMULADO_MS } from '../dados-falsos/12-config-prototipo.js';
@@ -46,6 +49,8 @@ const FRAGMENTOS = {
   'view-termos': 'telas/27-termos.html',
   'view-notificacoes': 'telas/29-notificacoes.html',
   'view-minha-conta': 'telas/10-minha-conta.html',
+  'view-minhas-campanhas': 'telas/26-minhas-campanhas.html',
+  'view-guia-estilos': 'telas/30-guia-estilos.html',
   'view-campanha': 'telas/2-campanha.html',
   'view-checkout': 'telas/3-checkout.html',
   'view-apoio-confirmado': 'telas/18-apoio-confirmado.html',
@@ -78,6 +83,7 @@ async function inicializarApp() {
   renderDonorDashboard();
   renderResearcherDashboard();
   renderCreateFormContent();
+  renderizarTelaGuiaEstilos();
   setProjectTab('sobre');
 
   inicializarFormularioLogin();
@@ -101,6 +107,16 @@ function trocarViewAtiva(view) {
 const preferemMenosMovimento = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 export function nav(view) {
+  if (view === 'campanha') renderizarComentariosPublicos();
+  if (view === 'minhas-campanhas') {
+    const usuario = usuarioAtual();
+    if (!usuario || !usuario.papeis.includes('pesquisador')) {
+      if (usuario) mostrarAcao('A página Minhas campanhas está disponível para pesquisadores cadastrados.');
+      view = 'minha-conta';
+    } else {
+      renderizarTelaMinhasCampanhas();
+    }
+  }
   if (document.startViewTransition && !preferemMenosMovimento.matches) {
     document.startViewTransition(() => trocarViewAtiva(view)).ready.catch(() => {});
   } else {

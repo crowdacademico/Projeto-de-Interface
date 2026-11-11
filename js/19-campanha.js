@@ -4,6 +4,12 @@ import { APOIADORES_RECENTES, TOTAL_APOIADORES } from '../dados-falsos/27-apoiad
 import { mostrarAviso } from './25-avisos.js';
 import { nav } from './24-roteador.js';
 import { escaparHtml, htmlEscalaProgresso, htmlAvatar } from './1-utilitarios.js';
+import { usuarioAtual } from './4-autenticacao-falsa.js';
+import { obterComentariosCampanha, registrarComentarioCampanha } from './10-minha-conta.js';
+import { montarComentariosCampanha } from './45-modais-conta.js';
+import { htmlSeloStatusCampanha } from './47-selos.js';
+
+const NOME_CAMPANHA_COMENTARIOS = 'Microplásticos no Rio Paraná';
 
 const CORES_ORCAMENTO = ['var(--cor-cianotipo-600)', 'var(--cor-cianotipo-500)', 'var(--cor-cianotipo-400)', 'var(--cor-cianotipo-300)'];
 
@@ -89,23 +95,41 @@ export function renderProjectTabs() {
     if (buttonsContainer) {
 
         buttonsContainer.innerHTML = projectTabs.map(tab => `
-            <button onclick="setProjectTab('${tab.id}')" id="tab-btn-${tab.id}" class="${tab.id === 'sobre' ? 'texto-forte font-bold border-primary' : 'texto-fraco hover-texto-forte font-medium border-transparent'} border-b-2 px-4 py-3 text-sm whitespace-nowrap transition flex items-center gap-2">
+            <button type="button" onclick="setProjectTab('${tab.id}')" id="tab-btn-${tab.id}" aria-controls="tab-${tab.id}" aria-pressed="${tab.id === 'sobre'}" class="${tab.id === 'sobre' ? 'texto-marca font-bold borda-marca' : 'texto-fraco hover-texto-forte font-medium border-transparent'} border-b-2 px-4 py-3 text-sm whitespace-nowrap transition flex items-center gap-2">
                 ${escaparHtml(tab.label)}
-                ${tab.badge ? `<span class="${tab.badgeClass ? 'tab-badge ' + tab.badgeClass : 'tab-badge fundo-realce texto-padrao'}">${escaparHtml(tab.badge)}</span>` : ''}
+                ${tab.badge ? `<span class="${tab.badgeClass ? 'badge ' + tab.badgeClass : 'badge fundo-realce texto-padrao'}">${escaparHtml(tab.badge)}</span>` : ''}
             </button>
         `).join('');
     }
 
     if (panelsContainer) {
         panelsContainer.innerHTML = projectTabs.map(tab => `
-            <div id="tab-${tab.id}" class="tab-content ${tab.id === 'sobre' ? 'active' : ''}">
+            <section id="tab-${tab.id}" aria-labelledby="tab-btn-${tab.id}" class="tab-content ${tab.id === 'sobre' ? 'active' : ''}">
                 ${tab.content}
-            </div>
+            </section>
         `).join('');
 
         renderOrcamentoCampanha();
         renderLinhaDoTempoCampanha();
     }
+    renderizarComentariosPublicos();
+}
+
+// Comentários da comunidade: ficam pendentes até o pesquisador endossar (ver 10-minha-conta.js).
+export function renderizarComentariosPublicos() {
+    const host = document.getElementById('comentarios-campanha-publica');
+    if (!host) return;
+    const usuario = usuarioAtual();
+    montarComentariosCampanha(host, {
+        campanha: NOME_CAMPANHA_COMENTARIOS,
+        comentarios: obterComentariosCampanha(),
+        podeComentar: Boolean(usuario?.papeis?.includes('pesquisador')),
+        aoEnviar: (texto) => {
+            registrarComentarioCampanha(NOME_CAMPANHA_COMENTARIOS, texto);
+            renderizarComentariosPublicos();
+            mostrarAviso('Comentário enviado. Ele ficará visível após o endosso do pesquisador responsável.');
+        },
+    });
 }
 
 export function renderProjectSupportInfo() {
@@ -140,6 +164,9 @@ export function renderProjectSupportInfo() {
 }
 
 export function definirEstadoCampanha(estado, { avisar = true } = {}) {
+  const seloStatus = document.getElementById('selo-status-campanha');
+  if (seloStatus) seloStatus.innerHTML = htmlSeloStatusCampanha(estado);
+
   const faixa = document.getElementById('faixa-estado-campanha');
   const valor = document.getElementById('valor-arrecadado-campanha');
   const legenda = document.getElementById('legenda-meta-campanha');
@@ -241,9 +268,10 @@ export function setProjectTab(tab) {
         const button = document.getElementById('tab-btn-' + current);
         if (content) content.classList.toggle('active', current === tab);
         if (button) {
-            button.classList.toggle('border-primary', current === tab);
+            button.setAttribute('aria-pressed', String(current === tab));
+            button.classList.toggle('borda-marca', current === tab);
             button.classList.toggle('border-transparent', current !== tab);
-            button.classList.toggle('texto-forte', current === tab);
+            button.classList.toggle('texto-marca', current === tab);
             button.classList.toggle('font-bold', current === tab);
             button.classList.toggle('texto-fraco', current !== tab);
             button.classList.toggle('font-medium', current !== tab);

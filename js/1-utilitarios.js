@@ -35,8 +35,18 @@ export function htmlMigalhas(itens) {
 }
 
 export function filtrarEOrdenarProjetos(lista, filtros = {}) {
-  const { busca = '', status = 'todos', areas = [], modelo = 'todos', ordenacao = 'recentes' } = filtros;
+  const {
+    busca = '',
+    status = 'todos',
+    areas = [],
+    grandesAreas = [],
+    subareas = [],
+    modelo = 'todos',
+    ordenacao = 'recentes',
+  } = filtros;
   const areasSet = areas instanceof Set ? areas : new Set(areas);
+  const grandesAreasSet = grandesAreas instanceof Set ? grandesAreas : new Set(grandesAreas);
+  const subareasSet = subareas instanceof Set ? subareas : new Set(subareas);
   const statusSet = status === 'todos' ? null : (status instanceof Set ? status : new Set(Array.isArray(status) ? status : [status]));
   const termo = busca.trim().toLowerCase();
 
@@ -47,6 +57,8 @@ export function filtrarEOrdenarProjetos(lista, filtros = {}) {
     }
     if (statusSet && !statusSet.has(p.status)) return false;
     if (areasSet.size > 0 && !areasSet.has(p.area)) return false;
+    if (grandesAreasSet.size > 0 && !grandesAreasSet.has(p.grandeArea)) return false;
+    if (subareasSet.size > 0 && !subareasSet.has(p.subarea)) return false;
     if (modelo !== 'todos' && p.modelo !== modelo) return false;
     return true;
   });

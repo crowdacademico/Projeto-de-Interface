@@ -26,6 +26,21 @@ export const projectTabs = [
                         <li><span class="font-semibold texto-forte">3.</span> Comparação entre espécies nativas e indicadores ambientais.</li>
                     </ul>
                 </div>
+                <section aria-labelledby="endossos-campanha-titulo">
+                    <h2 id="endossos-campanha-titulo" class="text-lg font-black texto-forte mb-3">Endossos acadêmicos</h2>
+                    <div class="space-y-4">
+                        <article class="rounded-xl border borda-padrao p-5">
+                            <h3 class="font-bold texto-forte">Prof. Dr. Renato Barros</h3>
+                            <p class="text-sm texto-fraco mt-1">Instituto de Biociências, UNESP</p>
+                            <p class="text-sm texto-padrao mt-3">A proposta apresenta metodologia sólida e relevância direta para conservação de ecossistemas fluviais.</p>
+                        </article>
+                        <article class="rounded-xl border borda-padrao p-5">
+                            <h3 class="font-bold texto-forte">Dra. Cíntia Mendes</h3>
+                            <p class="text-sm texto-fraco mt-1">Departamento de Saúde Pública, USP</p>
+                            <p class="text-sm texto-padrao mt-3">A integração entre saúde ambiental e biodiversidade potencializa a aplicação dos resultados.</p>
+                        </article>
+                    </div>
+                </section>
             </div>
         `
     },
@@ -83,24 +98,9 @@ export const projectTabs = [
         content: `<div id="campanha-linha-do-tempo"></div>`
     },
     {
-        id: 'endossos',
-        label: 'Endossos Acadêmicos',
-        badge: '2',
-        badgeClass: 'fundo-sucesso texto-sucesso px-2 py-0.5 rounded-full text-microrrotulo font-bold',
-        content: `
-            <div class="space-y-4">
-                <div class="rounded-xl border borda-padrao p-5">
-                    <div class="font-bold texto-forte">Prof. Dr. Renato Barros</div>
-                    <div class="text-sm texto-fraco mt-1">Instituto de Biociências, UNESP</div>
-                    <p class="text-sm texto-padrao mt-3">A proposta apresenta metodologia sólida e relevância direta para conservação de ecossistemas fluviais.</p>
-                </div>
-                <div class="rounded-xl border borda-padrao p-5">
-                    <div class="font-bold texto-forte">Dra. Cíntia Mendes</div>
-                    <div class="text-sm texto-fraco mt-1">Departamento de Saúde Pública, USP</div>
-                    <p class="text-sm texto-padrao mt-3">A integração entre saúde ambiental e biodiversidade potencializa a aplicação dos resultados.</p>
-                </div>
-            </div>
-        `
+        id: 'comentar',
+        label: 'Comentar',
+        content: `<div id="comentarios-campanha-publica"></div>`
     }
 ];
 

@@ -1,0 +1,82 @@
+/* GERADO por scripts/sincronizar-css-restrita.mjs (valores resolvidos da restrita). NÃO editar à mão.
+   Tokens que os componentes copiados pedem e a pública não tinha, mais os de TOKENS_DA_RESTRITA no script,
+   onde a restrita assume o valor. */
+:root {
+  --altura-modal: 90vh;
+  --camada-modal: 200;
+  --campo-altura-linha: 1.5;
+  --campo-borda: 2px;
+  --campo-espaco-vertical: 0.875rem;
+  --cor-anel-foco: color-mix(in srgb, var(--cor-marca) 30%, transparent);
+  --cor-avatar-2: #c2410c;
+  --cor-avatar-3: #15803d;
+  --cor-avatar-4: #0f766e;
+  --cor-borda-campo: #848fa3;
+  --cor-fundo-cartao: var(--color-white);
+  --cor-fundo-elevado: var(--color-white);
+  --cor-fundo-erro-forte: var(--color-red-600);
+  --cor-fundo-escurecido: rgba(0, 0, 0, 0.4);
+  --cor-fundo-hover: var(--color-slate-100);
+  --cor-fundo-marca-forte: var(--color-primary-dark);
+  --cor-fundo-marca-forte-hover: color-mix(in srgb, var(--color-primary-dark) 85%, black);
+  --cor-fundo-pagina: #f8fafc;
+  --cor-fundo-sutil: var(--color-slate-50);
+  --cor-texto: var(--color-slate-700);
+  --cor-texto-erro: #b91c1c;
+  --cor-texto-erro-forte: #991b1b;
+  --cor-texto-forte: var(--color-slate-800);
+  --cor-texto-fraco: var(--color-slate-500);
+  --cor-texto-info: #1d4ed8;
+  --cor-texto-marca: var(--color-primary-dark);
+  --cor-texto-sobre-cor: var(--color-white);
+  --cor-texto-sucesso: #047857;
+  --distancia-topo-modal: 5vh;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-sm: 0.875rem;
+  --font-size-xl: 1.25rem;
+  --font-size-xs: 0.75rem;
+  --largura-ficha: 64rem;
+  --opacidade-desabilitado: 0.6;
+}
+
+:root[data-tema='escuro'] {
+  --cor-borda-campo: #718096;
+  --cor-fundo-cartao: #1e293b;
+  --cor-fundo-elevado: #263349;
+  --cor-fundo-erro-forte: #b91c1c;
+  --cor-fundo-hover: #29394f;
+  --cor-fundo-pagina: #0f172a;
+  --cor-fundo-sutil: #1e2836;
+  --cor-texto: #cbd5e1;
+  --cor-texto-erro: #f87171;
+  --cor-texto-erro-forte: #fca5a5;
+  --cor-texto-forte: #f1f5f9;
+  --cor-texto-fraco: #94a3b8;
+  --cor-texto-info: #60a5fa;
+  --cor-texto-marca: #2fbf71;
+  --cor-texto-sucesso: #34d399;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-tema='sistema'] {
+    --cor-borda-campo: #718096;
+    --cor-fundo-cartao: #1e293b;
+    --cor-fundo-elevado: #263349;
+    --cor-fundo-erro-forte: #b91c1c;
+    --cor-fundo-hover: #29394f;
+    --cor-fundo-pagina: #0f172a;
+    --cor-fundo-sutil: #1e2836;
+    --cor-texto: #cbd5e1;
+    --cor-texto-erro: #f87171;
+    --cor-texto-erro-forte: #fca5a5;
+    --cor-texto-forte: #f1f5f9;
+    --cor-texto-fraco: #94a3b8;
+    --cor-texto-info: #60a5fa;
+    --cor-texto-marca: #2fbf71;
+    --cor-texto-sucesso: #34d399;
+  }
+}

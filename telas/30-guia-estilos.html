@@ -1,0 +1,108 @@
+<div class="mx-auto max-w-conteudo px-4 sm:px-6 lg:px-8">
+    <header class="mb-secao">
+        <p class="microrrotulo texto-marca mb-3">Biblioteca visual</p>
+        <h1 class="titulo-pagina mb-4">Guia de estilos</h1>
+        <p class="paragrafo texto-padrao max-w-leitura">
+            Componentes compartilhados do Projeto de Interface. Experimente os controles e veja como
+            cada peça se apresenta em situações comuns da plataforma.
+        </p>
+    </header>
+
+    <nav class="mb-secao rounded-xl border borda-padrao fundo-cartao p-6" aria-label="Nesta página">
+        <h2 class="subtitulo texto-forte mb-4">Componentes</h2>
+        <ul class="flex flex-wrap gap-x-6 gap-y-3">
+            <li><a class="texto-marca hover:underline" href="#guia-botoes" data-guia-ancora>Ações e avisos</a></li>
+            <li><a class="texto-marca hover:underline" href="#guia-busca" data-guia-ancora>Busca e filtros</a></li>
+            <li><a class="texto-marca hover:underline" href="#guia-formularios" data-guia-ancora>Formulários e tabela</a></li>
+            <li><a class="texto-marca hover:underline" href="#guia-status" data-guia-ancora>Status e autenticação</a></li>
+            <li><a class="texto-marca hover:underline" href="#guia-cartao" data-guia-ancora>Cartão de campanha</a></li>
+        </ul>
+    </nav>
+
+    <div class="space-y-secao">
+        <section id="guia-botoes" class="scroll-mt-sticky rounded-xl border borda-padrao fundo-cartao p-6 sm:p-8">
+            <h2 class="titulo-secao texto-forte mb-2">Ações e avisos</h2>
+            <p class="paragrafo texto-padrao mb-6">Ações, alertas, estado vazio, toast e diálogo modal.</p>
+            <div class="flex flex-wrap items-center gap-3 mb-8">
+                <button type="button" class="btn btn-primary" data-guia-toast="sucesso">Exibir toast</button>
+                <button type="button" class="btn btn-secondary" data-guia-toast="erro">Toast de erro</button>
+                <button type="button" class="btn btn-secondary" data-guia-modal>Abrir modal</button>
+            </div>
+            <div class="grid gap-6 lg:grid-cols-2">
+                <aside class="aviso-caixa aviso-caixa--info" role="note">
+                    <i class="fa-solid fa-circle-info aviso-caixa__icone" aria-hidden="true"></i>
+                    <div><h3 class="subtitulo font-bold mb-1">Aviso informativo</h3><div>Use avisos para destacar uma informação importante no contexto da tarefa.</div></div>
+                </aside>
+                <aside class="aviso-caixa aviso-caixa--atencao" role="note">
+                    <i class="fa-solid fa-triangle-exclamation aviso-caixa__icone" aria-hidden="true"></i>
+                    <div><h3 class="subtitulo font-bold mb-1">Atenção necessária</h3><div>Este exemplo mostra uma variação de tom do mesmo componente.</div></div>
+                </aside>
+                <div id="guia-estado-vazio"></div>
+                <div class="rounded-lg border borda-padrao p-5">
+                    <h3 class="subtitulo texto-forte mb-3">Rodapé de ações</h3>
+                    <div class="flex flex-col gap-3 border-t borda-padrao pt-6 sm:flex-row sm:justify-between">
+                        <button type="button" class="btn btn-secondary" data-guia-toast="info">Cancelar</button>
+                        <button type="button" class="btn btn-primary" data-guia-toast="sucesso-salvar">Salvar alterações</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="guia-busca" class="scroll-mt-sticky rounded-xl border borda-padrao fundo-cartao p-6 sm:p-8">
+            <h2 class="titulo-secao texto-forte mb-2">Busca e filtros</h2>
+            <p class="paragrafo texto-padrao mb-6">Campos de busca e grupos expansíveis podem ser combinados em catálogos.</p>
+            <div class="grid gap-6 lg:grid-cols-2">
+                <div class="space-y-4">
+                    <h3 class="subtitulo texto-forte">Barra de busca</h3>
+                    <div class="busca-catalogo">
+                        <span class="busca-catalogo__indice" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <label for="guia-busca-campo" class="sr-only">Buscar projetos</label>
+                        <input id="guia-busca-campo" type="search" placeholder="Buscar por projeto ou pesquisador" class="busca-catalogo__campo">
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="subtitulo texto-forte">Grupo de filtros expansível</h3>
+                    <div id="guia-filtro-ativo"></div>
+                    <div id="guia-filtro-desabilitado"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="guia-formularios" class="scroll-mt-sticky rounded-xl border borda-padrao fundo-cartao p-6 sm:p-8">
+            <h2 class="titulo-secao texto-forte mb-2">Formulários e tabela</h2>
+            <p class="paragrafo texto-padrao mb-6">Campos com rótulo, ajuda e erro acessivelmente associados, além de tabela semântica.</p>
+            <div class="grid gap-8 lg:grid-cols-2">
+                <div id="guia-campos" class="space-y-5"></div>
+                <div class="overflow-x-auto rounded-xl border borda-padrao fundo-cartao">
+                    <table class="tabela-simples">
+                        <caption class="sr-only">Exemplos de componentes e estados</caption>
+                        <thead><tr><th scope="col">Componente</th><th scope="col">Uso</th><th scope="col">Estado</th></tr></thead>
+                        <tbody>
+                            <tr><th scope="row">Campo de formulário</th><td>Entrada de dados</td><td>Com ajuda</td></tr>
+                            <tr><th scope="row">Toast</th><td>Confirmação breve</td><td>Interativo</td></tr>
+                            <tr><th scope="row">Modal</th><td>Diálogo</td><td>Abre por botão</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="guia-status" class="scroll-mt-sticky rounded-xl border borda-padrao fundo-cartao p-6 sm:p-8">
+            <h2 class="titulo-secao texto-forte mb-2">Status e autenticação</h2>
+            <p class="paragrafo texto-padrao mb-6">Selos comunicam estados de domínio; o ícone do provedor complementa a ação de login.</p>
+            <div id="guia-selos" class="flex flex-wrap items-center gap-3"></div>
+        </section>
+
+        <section id="guia-cartao" class="scroll-mt-sticky rounded-xl border borda-padrao fundo-cartao p-6 sm:p-8">
+            <h2 class="titulo-secao texto-forte mb-2">Cartão de campanha e paginação</h2>
+            <p class="paragrafo texto-padrao mb-6">Prévia real do cartão e controle de carregamento incremental.</p>
+            <div class="grid gap-8 lg:grid-cols-2">
+                <div id="guia-cartao-campanha" class="max-w-sm"></div>
+                <div class="space-y-6">
+                    <div id="guia-mais-resultados" class="text-center"></div>
+                    <p class="paragrafo texto-padrao">O botão atualiza a quantidade exibida sem sair desta página.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

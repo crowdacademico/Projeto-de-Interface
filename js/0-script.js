@@ -4,7 +4,7 @@ import { mostrarAcao } from './1-utilitarios.js';
 import { alternarTema } from './3-tema.js';
 import { sair } from './4-autenticacao-falsa.js';
 import { alternarMenuConta, fecharMenuConta, atualizarCabecalhoConta } from './7-cabecalho.js';
-import { renderizarTelaMinhaConta } from './10-minha-conta.js';
+import { renderizarTelaMinhaConta, selecionarAbaMinhaConta } from './10-minha-conta.js';
 import { setProjectTab, definirEstadoCampanha } from './19-campanha.js';
 import { copyPix, confirmarPagamento, gerarNovoCodigoPix } from './20-checkout.js';
 import { navegarExplorarPorArea } from './29-explorar.js';
@@ -36,6 +36,7 @@ Object.assign(window, {
   fecharMenuConta,
   atualizarCabecalhoConta,
   renderizarTelaMinhaConta,
+  selecionarAbaMinhaConta,
   setProjectTab,
   definirEstadoCampanha,
   navegarExplorarPorArea,

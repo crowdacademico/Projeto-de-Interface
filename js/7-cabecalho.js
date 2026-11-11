@@ -32,12 +32,12 @@ function htmlDropdownLogado(usuario) {
             <p class="text-sm font-bold texto-forte truncate">${escaparHtml(usuario.nome)}</p>
             <p class="text-xs texto-fraco truncate">${escaparHtml(usuario.email)}</p>
         </div>
-        <button type="button" onclick="fecharMenuConta(); nav('dash-doador');" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold texto-padrao hover-fundo-sutil transition-colors text-left">
-            <i class="fa-solid fa-heart w-4"></i> Seus Apoios
+        <button type="button" onclick="fecharMenuConta(); nav('minha-conta'); selecionarAbaMinhaConta('atividade');" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold texto-padrao hover-fundo-sutil transition-colors text-left">
+            <i class="fa-solid fa-heart w-4"></i> Seus Apoios e Atividade
         </button>
         ${ehPesquisador ? `
-            <button type="button" onclick="fecharMenuConta(); nav('dash-pesquisador');" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold texto-padrao hover-fundo-sutil transition-colors text-left">
-                <i class="fa-solid fa-graduation-cap w-4"></i> Seu Estúdio
+            <button type="button" onclick="fecharMenuConta(); nav('minhas-campanhas');" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold texto-padrao hover-fundo-sutil transition-colors text-left">
+                <i class="fa-solid fa-graduation-cap w-4"></i> Suas Campanhas
             </button>
         ` : `
             <button type="button" onclick="fecharMenuConta(); mostrarAcao('Complete seu cadastro de Pesquisador pra acessar o Estúdio (peça o upgrade em Seus Apoios).');" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold texto-fraco hover-fundo-sutil transition-colors text-left">

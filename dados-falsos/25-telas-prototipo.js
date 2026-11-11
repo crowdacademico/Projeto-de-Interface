@@ -16,5 +16,7 @@ export const TELAS_PROTOTIPO = [
   { rota: 'dash-pesquisador', rotulo: '15. Pesquisador', grupo: 'Painéis internos' },
   { rota: 'criar-campanha', rotulo: '16. Criar Projeto', grupo: 'Painéis internos' },
   { rota: 'minha-conta', rotulo: '17. Minha Conta', grupo: 'Conta' },
+  { rota: 'minhas-campanhas', rotulo: '17b. Minhas Campanhas', grupo: 'Conta' },
+  { rota: 'guia-estilos', rotulo: 'Guia de estilos', grupo: 'Outras' },
   { rota: 'termos', rotulo: '18. Termos', grupo: 'Outras' },
 ];

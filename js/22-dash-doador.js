@@ -46,7 +46,7 @@ export function renderDonorDashboard() {
                 <td class="px-8 py-5 font-bold texto-padrao">${escaparHtml(item.project)}</td>
                 <td class="px-8 py-5 font-semibold texto-forte numero text-right">${escaparHtml(item.value)}</td>
                 <td class="px-8 py-5 texto-padrao">${escaparHtml(item.payment)}</td>
-                <td class="px-8 py-5"><span class="status-pill ${TONS_STATUS[item.statusTone]}">${escaparHtml(item.status)}</span></td>
+                <td class="px-8 py-5"><span class="badge ${TONS_STATUS[item.statusTone]}">${escaparHtml(item.status)}</span></td>
                 <td class="px-8 py-5 text-right whitespace-nowrap">
                     <button type="button" onclick="mostrarAcao('Recibo simulado no protótipo.')" class="text-xs font-bold texto-fraco hover-texto-forte transition-colors mr-3">Recibo</button>
                     <button type="button" onclick="nav('campanha')" class="text-xs font-bold texto-marca hover:underline">Ver projeto</button>

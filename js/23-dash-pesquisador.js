@@ -51,7 +51,7 @@ export function renderResearcherDashboard() {
                 <td class="px-6 py-4 texto-padrao numero text-right">${escaparHtml(project.donors)}</td>
                 <td class="px-6 py-4 texto-padrao">${escaparHtml(project.deadline)}</td>
                 <td class="px-6 py-4 texto-padrao numero text-right">${escaparHtml(project.goal)}</td>
-                <td class="px-6 py-4"><span class="status-pill ${TONS_STATUS[project.statusTone]}">${escaparHtml(project.status)}</span></td>
+                <td class="px-6 py-4"><span class="badge ${TONS_STATUS[project.statusTone]}">${escaparHtml(project.status)}</span></td>
                 <td class="px-6 py-4 text-right">
                     <button type="button" onclick="mostrarAcao('Ações da campanha simuladas no protótipo.')" aria-label="Mais ações" class="w-8 h-8 rounded-md hover-fundo-sutil texto-fraco transition-colors"><i class="fa-solid fa-ellipsis"></i></button>
                 </td>

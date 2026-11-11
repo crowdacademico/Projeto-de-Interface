@@ -2,22 +2,23 @@ import { PROJETOS_FALSOS } from '../dados-falsos/13-projetos.js';
 import { htmlCardProjeto } from './18-home.js';
 import { htmlEstadoVazio, filtrarEOrdenarProjetos } from './1-utilitarios.js';
 import { nav } from './24-roteador.js';
+import { criarFiltrosConhecimento } from './41-filtro-expansivel.js';
+import {
+  CODIGOS_GRANDES_POR_AREA_LEGADA,
+  obterSubareas,
+  ROTULOS_AREA_POR_CODIGO,
+} from '../dados-falsos/29-areas-conhecimento.js';
 
 const ITENS_POR_PAGINA = 9;
 
-const ROTULOS_AREA = {
-  biologicas: 'Ciências Biológicas',
-  exatas: 'Exatas e Engenharias',
-  saude: 'Ciências da Saúde',
-  humanas: 'Ciências Humanas',
-};
 const ROTULOS_STATUS = { 'em-captacao': 'Em captação', 'em-breve': 'Em breve', financiada: 'Financiados' };
 const ROTULOS_MODELO = { 'tudo-ou-nada': 'Tudo ou Nada', flexivel: 'Flexível' };
 
 const estado = {
   busca: '',
   status: 'todos',
-  areas: new Set(),
+  grandesAreas: new Set(),
+  subareas: new Set(),
   modelo: 'todos',
   ordenacao: 'recentes',
   visiveis: ITENS_POR_PAGINA,
@@ -31,9 +32,26 @@ function contarFiltrosAtivos() {
   let n = 0;
   if (estado.busca.trim()) n += 1;
   if (estado.status !== 'todos') n += 1;
-  n += estado.areas.size;
+  n += estado.grandesAreas.size + estado.subareas.size;
   if (estado.modelo !== 'todos') n += 1;
   return n;
+}
+
+let filtrosConhecimento = null;
+
+// Desmarcar uma grande área tira também as subáreas que só existiam por causa dela.
+function atualizarGrandesAreas(valores, redesenhar = true) {
+  estado.grandesAreas = new Set(valores);
+  const disponiveis = new Set(obterSubareas(valores).map((subarea) => subarea.value));
+  estado.subareas = new Set([...estado.subareas].filter((subarea) => disponiveis.has(subarea)));
+  estado.visiveis = ITENS_POR_PAGINA;
+  if (redesenhar) renderizarResultados();
+}
+
+function atualizarSubareas(valores, redesenhar = true) {
+  estado.subareas = new Set(valores);
+  estado.visiveis = ITENS_POR_PAGINA;
+  if (redesenhar) renderizarResultados();
 }
 
 function renderizarFichasFiltros() {
@@ -50,12 +68,11 @@ function renderizarFichasFiltros() {
       document.querySelector('input[name="explorar-status"][value="todos"]').checked = true;
     } });
   }
-  estado.areas.forEach((area) => {
-    fichas.push({ rotulo: ROTULOS_AREA[area], limpar: () => {
-      estado.areas.delete(area);
-      const campo = document.querySelector(`.explorar-checkbox-area[value="${area}"]`);
-      if (campo) campo.checked = false;
-    } });
+  estado.grandesAreas.forEach((codigo) => {
+    fichas.push({ rotulo: ROTULOS_AREA_POR_CODIGO.get(codigo), limpar: () => atualizarGrandesAreas([...estado.grandesAreas].filter((c) => c !== codigo), false) });
+  });
+  estado.subareas.forEach((codigo) => {
+    fichas.push({ rotulo: ROTULOS_AREA_POR_CODIGO.get(codigo), limpar: () => atualizarSubareas([...estado.subareas].filter((c) => c !== codigo), false) });
   });
   if (estado.modelo !== 'todos') {
     fichas.push({ rotulo: ROTULOS_MODELO[estado.modelo], limpar: () => {
@@ -93,6 +110,7 @@ function renderizarResultados() {
     : `${filtrados.length} projeto${filtrados.length === 1 ? '' : 's'} em captação`;
 
   renderizarFichasFiltros();
+  filtrosConhecimento?.atualizar([...estado.grandesAreas], [...estado.subareas]);
 
   if (filtrados.length === 0) {
     grade.innerHTML = '';
@@ -126,12 +144,10 @@ function renderizarResultados() {
   }
 }
 
+// A Home ainda chama a área pelo nome antigo (biologicas, exatas, saude, humanas): vira as grandes áreas do CNPq.
 export function definirFiltroAreaExplorar(area) {
-  estado.areas = new Set([area]);
-  estado.visiveis = ITENS_POR_PAGINA;
-  document.querySelectorAll('.explorar-checkbox-area').forEach((campo) => {
-    campo.checked = campo.value === area;
-  });
+  atualizarGrandesAreas(CODIGOS_GRANDES_POR_AREA_LEGADA[area] ?? [], false);
+  estado.subareas = new Set();
   renderizarResultados();
 }
 
@@ -143,13 +159,13 @@ export function navegarExplorarPorArea(area) {
 function limparTodosFiltros() {
   estado.busca = '';
   estado.status = 'todos';
-  estado.areas.clear();
+  estado.grandesAreas.clear();
+  estado.subareas.clear();
   estado.modelo = 'todos';
   estado.visiveis = ITENS_POR_PAGINA;
   document.getElementById('explorar-busca').value = '';
   document.querySelector('input[name="explorar-status"][value="todos"]').checked = true;
   document.querySelector('input[name="explorar-modelo"][value="todos"]').checked = true;
-  document.querySelectorAll('.explorar-checkbox-area').forEach((c) => { c.checked = false; });
   renderizarResultados();
 }
 
@@ -175,13 +191,9 @@ export function renderizarTelaExplorar() {
     });
   });
 
-  document.querySelectorAll('.explorar-checkbox-area').forEach((campo) => {
-    campo.addEventListener('change', () => {
-      if (campo.checked) estado.areas.add(campo.value);
-      else estado.areas.delete(campo.value);
-      estado.visiveis = ITENS_POR_PAGINA;
-      renderizarResultados();
-    });
+  filtrosConhecimento = criarFiltrosConhecimento(document.getElementById('explorar-filtros-conhecimento'), {
+    aoAlterarGrandesAreas: atualizarGrandesAreas,
+    aoAlterarSubareas: atualizarSubareas,
   });
 
   document.querySelectorAll('input[name="explorar-modelo"]').forEach((campo) => {

@@ -4,6 +4,7 @@
         <div class="chip-rf inline-flex items-center gap-2 veu-claro texto-sobre-escuro px-3 py-2 rounded-full mb-6">Requisito Funcional: <span class="rf-inline">RF-044 / RF-033</span>. Tela de detalhes de projeto com CTA de apoio</div>
         <p class="text-sm font-medium texto-sobre-escuro mb-6 flex items-center gap-2"><span class="cursor-pointer hover-texto-sobre-escuro-forte transition" onclick="nav('home')"><i class="fa-solid fa-house text-xs"></i> Home</span> <i class="fa-solid fa-chevron-right text-microrrotulo"></i> Ciências Biológicas</p>
         <span class="veu-claro texto-urgencia-sobre-escuro microrrotulo px-3 py-1.5 rounded-full mb-4 inline-block">Projeto Tudo ou Nada</span>
+        <div id="selo-status-campanha" class="mb-4"></div>
         <h1 class="titulo-pagina texto-sobre-escuro-forte max-w-4xl mb-6">Análise do impacto de microplásticos na saúde de peixes nativos do Rio Paraná</h1>
         <div class="flex flex-col sm:flex-row sm:items-center gap-4 texto-sobre-escuro text-sm font-medium">
             <a href="#" onclick="nav('perfil-pesquisador'); return false;" class="flex items-center gap-2 hover:underline"><span class="w-6 h-6 rounded-full fundo-marca-sobre-escuro flex items-center justify-center texto-sobre-escuro-forte font-bold text-xs">M</span> Dra. Marina Souza (UNESP)</a>
@@ -24,7 +25,7 @@
             <span class="absolute bottom-4 left-4 bg-white/90 texto-padrao microrrotulo px-3 py-1 rounded-full border borda-padrao">Vídeo incorporado <span class="rf-inline">(RF-033)</span></span>
         </div>
 
-        <div id="project-tab-buttons" class="sticky top-sticky z-sticky fundo-cartao rounded-xl shadow-sm border borda-padrao mb-8 p-2 flex gap-2 overflow-x-auto hide-scrollbar"></div>
+        <div id="project-tab-buttons" role="group" aria-label="Detalhes da campanha" class="sticky top-sticky z-sticky fundo-cartao rounded-xl shadow-sm border borda-padrao mb-8 p-2 flex gap-2 overflow-x-auto hide-scrollbar"></div>
 
         <div class="fundo-cartao rounded-xl shadow-sm border borda-padrao p-8 md:p-10">
             <div id="project-tab-panels"></div>
